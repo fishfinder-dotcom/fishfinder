@@ -109,6 +109,10 @@ body{font-family:var(--font);color:var(--t1);display:flex;flex-direction:column;
 .bk-close{background:none;border:1px solid var(--brd2);border-radius:var(--r);padding:5px 11px;font-size:12px;color:var(--t2);cursor:pointer;font-family:var(--font);}
 .nlist{flex:1;overflow-y:auto;padding:8px 11px;display:flex;flex-direction:column;gap:7px;}
 .note{background:var(--surf);border-radius:var(--r);padding:9px 11px;}
+.pinned-note{background:rgba(180,150,60,.10);border:1px solid rgba(180,150,60,.25);border-radius:var(--r);padding:9px 11px;margin-bottom:2px;}
+.pinned-note .pn-text{font-size:14px;color:#a07820;line-height:1.45;font-style:italic;}
+@media(prefers-color-scheme:dark){.pinned-note{background:rgba(180,150,60,.08);border-color:rgba(180,150,60,.2);}.pinned-note .pn-text{color:#c9a84c;}}
+.pinned-edit{background:none;border:none;font-size:11px;color:var(--t3);cursor:pointer;padding:2px 4px;font-family:var(--font);text-decoration:underline;text-underline-offset:2px;}
 .nd{font-size:11px;color:var(--t3);font-family:var(--mono);margin-bottom:4px;}
 .nt{font-size:14px;color:var(--t1);line-height:1.45;}
 .nadd{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--brd);flex-shrink:0;}
@@ -455,6 +459,19 @@ function bCard(v, i){
         <textarea id="ni-${v.id}" placeholder="Add a note..."></textarea>
         <button onclick="addN('${v.id}')">Save</button>
       </div>
+      <div class="pinned-note" id="pn-${v.id}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;">
+          <div class="pn-text" id="pn-text-${v.id}">${v.pinnedNote||'<span style="opacity:.45;">No scout report yet.</span>'}</div>
+          <button class="pinned-edit" onclick="editPinned('${v.id}')">edit</button>
+        </div>
+        <div id="pn-edit-${v.id}" style="display:none;margin-top:6px;">
+          <textarea id="pn-ta-${v.id}" style="width:100%;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r);color:var(--t1);padding:8px 10px;font-size:14px;font-family:var(--font);resize:none;height:72px;line-height:1.3;">${v.pinnedNote||''}</textarea>
+          <div style="display:flex;gap:6px;margin-top:5px;">
+            <button onclick="savePinned('${v.id}')" style="background:var(--t1);color:var(--card);border:none;border-radius:var(--r);padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);">Save</button>
+            <button onclick="cancelPinned('${v.id}')" style="background:none;border:1px solid var(--brd2);border-radius:var(--r);padding:6px 12px;font-size:13px;color:var(--t2);cursor:pointer;font-family:var(--font);">Cancel</button>
+          </div>
+        </div>
+      </div>
       <div class="nlist" id="nl-${v.id}">${noteH}</div>
     </div>
   </div>`;
@@ -526,6 +543,32 @@ function gTo(i, a){
 }
 
 function clBk(id){ backs[id]=false; document.getElementById('bk-'+id)?.classList.remove('open'); }
+
+function editPinned(id){
+  document.getElementById('pn-edit-'+id).style.display='block';
+  const ta = document.getElementById('pn-ta-'+id);
+  const v = VV.find(x=>x.id===id);
+  if(ta && v) ta.value = v.pinnedNote||'';
+  ta.focus();
+}
+
+function savePinned(id){
+  const ta = document.getElementById('pn-ta-'+id);
+  if(!ta) return;
+  const v = VV.find(x=>x.id===id);
+  if(!v) return;
+  v.pinnedNote = ta.value.trim();
+  v.lastModified = Date.now();
+  save();
+  // Update display
+  const textEl = document.getElementById('pn-text-'+id);
+  if(textEl) textEl.innerHTML = v.pinnedNote || '<span style="opacity:.45;">No scout report yet.</span>';
+  document.getElementById('pn-edit-'+id).style.display='none';
+}
+
+function cancelPinned(id){
+  document.getElementById('pn-edit-'+id).style.display='none';
+}
 
 function addN(id){
   const el=document.getElementById('ni-'+id); if(!el) return;
@@ -704,113 +747,99 @@ function buildReadScript(v){
   };
   parts.push(prologues[type] || `You have ${v.name} tagged as ${type}${subtype?' with a subtype of '+subtype:''}.`);
 
-  // ── PRE-FLOP SCORE ──
-  const preScoreAttrs = ['Pre Range','Pre Aggro','Pre 3-Bet','Pre Bluff'];
-  const preVals = preScoreAttrs.map(n => getAttr(n));
-  if(preVals.every(v => v !== null)){
-    const preScore = preVals.reduce((a,b) => a+b, 0);
-    parts.push(`${v.name} has a pre-flop score of ${preScore}.`);
-  }
 
-  // ── POST-FLOP SCORE ──
-  const postScoreAttrs = ['Post Aggro','Post Bluff','Bet Thin?'];
-  const postVals = postScoreAttrs.map(n => getAttr(n));
-  if(postVals.every(v => v !== null)){
-    const postScore = postVals.reduce((a,b) => a+b, 0);
-    parts.push(`${v.name} has a post-flop score of ${postScore}.`);
-  }
 
   // ── PHRASE LIBRARIES ──
   const phrases = {
     'Pre Range': {
-      1:'Super tight. They need a premium to enter.',
-      2:'Very tight. Limited range.',
-      3:'Tight. Below average range.',
-      4:'Average range.', 5:'Average range.', 6:'Average range.',
-      7:'Wide range. They play a lot of hands.',
+      1:'Super tight.',
+      2:'Very tight. Snug range.',
+      3:'Tighter than most.',
+      4:null, 5:null, 6:null,
+      7:'Wider than most.',
       8:'Very wide range.',
-      9:'Super wide. Almost anything.'
+      9:'Super wide. Plays any two.'
     },
     'Pre Aggro': {
-      1:'Completely passive pre. No threat.',
+      1:'Completely passive pre.',
       2:'Very passive pre.',
       3:'Mostly passive pre.',
-      4:'Average pre-flop aggression.', 5:'Average pre-flop aggression.', 6:'Average pre-flop aggression.',
-      7:'Aggressive pre. Apply caution.',
+      4:null, 5:null, 6:null,
+      7:'Can be aggressive pre.',
       8:'Very aggressive pre.',
-      9:'Dangerously aggressive pre. Give them room.'
+      9:'Super aggressive pre.'
     },
     'Pre 3-Bet': {
-      1:'Never 3-bets. Fold to it.',
-      2:'Almost never 3-bets.',
-      3:'Rarely 3-bets.',
-      4:'Average 3-bet frequency.', 5:'Average 3-bet frequency.', 6:'Average 3-bet frequency.',
-      7:'3-bets regularly. Be ready.',
-      8:'3-bets often.',
-      9:'3-bets constantly. Call lighter.'
+      1:'3-bets aces and kings and that's it.',
+      2:'3-bets queen-queen plus and ace-king.',
+      3:'3-bets tens plus and some suited broadways.',
+      4:'Has a proper 3-bet range. Probably ace-five suited as a bluff.', 5:'Has a proper 3-bet range. Probably ace-five suited as a bluff.', 6:'Has a proper 3-bet range. Probably ace-five suited as a bluff.',
+      7:'Can 3-bet smaller pairs, suited gappers, and all suited aces.',
+      8:'3-bets all their opening hands. Never flats pre.',
+      9:'3-bets, never flats, and 3-bet bluffs too much.'
     },
     'Pre Bluff': {
-      1:'Never bluffs pre. If they raise, they have it.',
-      2:'Rarely bluffs pre. Their raises are strong.',
-      3:'Below average pre-flop bluff frequency.',
-      4:'Average pre-flop bluff frequency.', 5:'Average pre-flop bluff frequency.', 6:'Average pre-flop bluff frequency.',
-      7:'Bluffs pre regularly. Widen your calling range.',
-      8:'Bluffs pre often. Their raises are frequently air.',
-      9:'Bluffs pre constantly. Call them light.'
+      1:'No bluffs pre.',
+      2:'No bluffs pre.',
+      3:'No bluffs pre.',
+      4:null, 5:null, 6:null,
+      7:'Has some bluffs pre.',
+      8:'Has some bluffs pre.',
+      9:'Has some bluffs pre.'
     },
     'Pre Fold Freq': {
-      1:'Never folds pre. Don\'t bother bluffing.',
-      2:'Rarely folds pre.',
-      3:'Folds less than average pre.',
-      4:'Average pre-flop fold frequency.', 5:'Average pre-flop fold frequency.', 6:'Average pre-flop fold frequency.',
-      7:'Folds pre more than average. Apply pressure.',
-      8:'Folds pre frequently. Steal often.',
-      9:'Folds pre constantly. Steal liberally.'
+      1:'Always sees a flop.',
+      2:'Always sees a flop.',
+      3:'Rarely folds pre. Likes to see a flop.',
+      4:null, 5:null, 6:null,
+      7:'Borders on over-folding pre.',
+      8:'Definitely over-folds pre.',
+      9:'Definitely over-folds pre.'
     },
     'Post Aggro': {
-      1:'Completely passive post. No threat.',
+      1:'Completely passive post.',
       2:'Very passive post.',
       3:'Mostly passive post.',
-      4:'Average post-flop aggression.', 5:'Average post-flop aggression.', 6:'Average post-flop aggression.',
-      7:'Aggressive post. Proceed carefully.',
+      4:null, 5:null, 6:null,
+      7:'Can be aggressive post.',
       8:'Very aggressive post.',
-      9:'Relentlessly aggressive post. Tighten your calling range.'
+      9:'Super aggressive post.'
     },
     'Post Bluff': {
-      1:'Never bluffs post. If they bet, they have it.',
-      2:'Rarely bluffs post. Respect their bets.',
-      3:'Below average post-flop bluff frequency.',
-      4:'Average post-flop bluff frequency.', 5:'Average post-flop bluff frequency.', 6:'Average post-flop bluff frequency.',
-      7:'Bluffs post regularly. Look them up.',
-      8:'Bluffs post often. Their bets are frequently air.',
-      9:'Bluffs post constantly. Call them down light.'
+      1:'Never bluffs post.',
+      2:'Never bluffs post.',
+      3:'Can find the obvious river bluffs.',
+      4:'Can find the obvious river bluffs.', 5:'Has a good post-flop bluff range.', 6:'Has a good post-flop bluff range.',
+      7:null,
+      8:'Likes to bluff too much.',
+      9:'Over-bluffs flops and rivers.'
     },
     'Overvalue Hand?': {
-      1:'Never overvalues. Respect their action.',
-      2:'Rarely overvalues.',
-      3:'Occasionally overvalues.',
-      4:'Average tendency to overvalue.', 5:'Average tendency to overvalue.', 6:'Average tendency to overvalue.',
-      7:'Overvalues frequently. Call down lighter.',
-      8:'Overvalues often. Call them down.',
-      9:'Almost always overvalues. Call them down.'
+      1:'Understands hand strength.',
+      2:'Understands hand strength.',
+      3:'Understands hand strength.',
+      4:null, 5:null, 6:null,
+      7:'Overvalues top pair.',
+      8:'Doesn't understand hand strength.',
+      9:'Doesn't understand hand strength.'
     },
     'Bet Thin?': {
-      1:'Will not bet a scary river.',
-      2:'Rarely bets a scary river.',
-      3:'Below average thin value.',
-      4:'Average thin value betting.', 5:'Average thin value betting.', 6:'Average thin value betting.',
-      7:'Bets thin. River bets are not always strong.',
-      8:'Bets thin well. Widen your calling range.',
-      9:'Bets any profitable river. Widen your calling range significantly.'
+      1:'Will check river with everything but the nuts.',
+      2:'Scared money. Won't bet scary rivers.',
+      3:'Can bet river with second pair.',
+      4:'Understands thin river bets.', 5:'Understands thin river bets.', 6:'Understands thin river bets.',
+      7:'Can bet river light.',
+      8:'Will bet river light.',
+      9:'If you check, he always bets river.'
     },
     'Post Fold Freq': {
-      1:'Never folds post. Don\'t bluff.',
-      2:'Rarely folds post.',
-      3:'Folds less than average post.',
-      4:'Average post-flop fold frequency.', 5:'Average post-flop fold frequency.', 6:'Average post-flop fold frequency.',
-      7:'Folds post more than average. Bluff selectively.',
-      8:'Folds post frequently. Bluff often.',
-      9:'Folds post constantly. Fire away.'
+      1:'Don't bluff turn or river.',
+      2:'Don't bluff turn or river.',
+      3:'Only bluff post in the best spots.',
+      4:'Only bluff post in the best spots.', 5:'Bluff them appropriately.', 6:'Bluff them appropriately.',
+      7:'Can be pushed off a hand.',
+      8:'Scared money.',
+      9:'Scared money.'
     }
   };
 
@@ -934,44 +963,70 @@ function buildReadScript(v){
     'Pre Aggro': {lo:'Very passive pre.',     hi:'Passive pre.'}
   };
 
-  const attrOrder = ['Pre Range','Pre Aggro','Pre 3-Bet','Pre Bluff','Pre Fold Freq','Post Aggro','Post Bluff','Overvalue Hand?','Bet Thin?','Post Fold Freq'];
-
-  attrOrder.forEach(name => {
+  // Helper to fire a cue for one attribute
+  function fireCue(name){
     const val = getAttr(name);
     if(val===null) return;
     const rule = typeRules[name];
     const ph = phrases[name];
-    if(!ph) return;
-
-    if(rule==='skip') return;
-
+    if(!ph||rule==='skip') return;
     if(rule==='always'){
       if(skipAverage && val>=4 && val<=6) return;
-      const p = ph[val]; if(p && !p.startsWith('Average')) parts.push(p);
+      const p = ph[val]; if(p) parts.push(p);
       return;
     }
-
     if(rule==='compressed'){
       if(val<=5){ parts.push(`${name} is ${val}.`); return; }
       if(val<=7){ parts.push(compressedHigh[name]?.lo||ph[val]); return; }
       parts.push(compressedHigh[name]?.hi||ph[val]); return;
     }
-
     if(rule==='compressed-low'){
       if(val>=5){ parts.push(`${name} is ${val}.`); return; }
       if(val<=2){ parts.push(compressedLow[name]?.lo||ph[val]); return; }
       parts.push(compressedLow[name]?.hi||ph[val]); return;
     }
-
     if(typeof rule==='number'){
       if(rule>0 && val>=rule){ const p=ph[val]; if(p) parts.push(p); }
       if(rule<0 && val<=Math.abs(rule)){ const p=ph[val]; if(p) parts.push(p); }
-      return;
     }
-  });
+  }
 
-  // ── LATEST NOTE ──
-  if(v.notes&&v.notes.length) parts.push('Latest note. ' + v.notes[0].text);
+  // ── PRE-FLOP SCORE ──
+  const preScoreNames = ['Pre Range','Pre Aggro','Pre 3-Bet','Pre Bluff'];
+  const preVals = preScoreNames.map(n => getAttr(n));
+  if(preVals.every(x => x !== null)){
+    parts.push(`${v.name} has a pre-flop score of ${preVals.reduce((a,b)=>a+b,0)}.`);
+  }
+
+  // ── PRE-FLOP CUES ──
+  ['Pre Range','Pre Aggro','Pre 3-Bet','Pre Bluff','Pre Fold Freq'].forEach(fireCue);
+
+  // ── POST-FLOP SCORE ──
+  const postScoreNames = ['Post Aggro','Post Bluff','Bet Thin?'];
+  const postVals = postScoreNames.map(n => getAttr(n));
+  if(postVals.every(x => x !== null)){
+    parts.push(`${v.name} has a post-flop score of ${postVals.reduce((a,b)=>a+b,0)}.`);
+  }
+
+  // ── POST-FLOP CUES ──
+  ['Post Aggro','Post Bluff','Bet Thin?','Overvalue Hand?','Post Fold Freq'].forEach(fireCue);
+
+  // ── PINNED NOTE ──
+  const pinned = v.pinnedNote || '';
+  if(pinned.trim()){
+    parts.push('You wrote. ' + pinned.trim());
+  } else {
+    parts.push(`You need details on ${v.name}.`);
+  }
+
+  // ── DEDUPLICATE CUES ──
+  const seen = new Set();
+  const dedupedParts = parts.filter(p => { if(seen.has(p)) return false; seen.add(p); return true; });
+
+  // ── LATEST TIMESTAMPED NOTE ──
+  if(v.notes&&v.notes.length) dedupedParts.push('Latest note. ' + v.notes[0].text);
+
+  return dedupedParts.join(' ');
 
   // ── IF NO OUTLIERS ──
   if(parts.length===1){
@@ -979,7 +1034,6 @@ function buildReadScript(v){
     else if(!v.notes||!v.notes.length) parts.push('No attributes recorded yet.');
   }
 
-  return parts.join(' ');
 }
 
 /* ── CROP SYSTEM ── */
@@ -1162,7 +1216,7 @@ function saveV(){
     if(v){ v.name=nm; v.attrs=attrs; if(ph&&(ph.startsWith('data:')||ph.startsWith('blob:'))) v.photo=ph; v.lastModified=Date.now(); }
     ulocked[editId]=false;
   } else {
-    VV.push({id:uid(),name:nm,photo:ph.startsWith('data:')?ph:'',attrs,added:d,notes:[],lastModified:Date.now()});
+    VV.push({id:uid(),name:nm,photo:ph.startsWith('data:')?ph:'',attrs,added:d,notes:[],pinnedNote:'',lastModified:Date.now()});
     cidx=VV.length-1;
   }
   save(); closeM(); ra();
