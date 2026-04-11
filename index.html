@@ -314,81 +314,23 @@ const FORM_ORDER = [
 ];
 
 const SEED = [
-  {id:"v1",name:"Voldemort",added:"Apr 1, 2025",photo:"",notes:[
-    {text:"Went all-in pre with AK, zero hesitation. No tells on strong hands — face completely still.",date:"Apr 1, 2025  9:14 PM"},
-    {text:"Tilted hard after losing a flip. Massively over-bet next three hands. Exploit post-bad-beat.",date:"Apr 1, 2025  11:02 PM"}
-  ],attrs:[
-    {name:"Player type",type:"dropdown",val:"Loose",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
-    {name:"Subtype",type:"dropdown",val:"Aggro",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
-    {name:"Pre Range",type:"slider",val:8},{name:"Pre Aggro",type:"slider",val:9},
-    {name:"Pre 3-Bet",type:"slider",val:8},{name:"Pre Bluff",type:"slider",val:7},
-    {name:"Pre Fold Freq",type:"slider",val:2},
-    {name:"Post Aggro",type:"slider",val:9},{name:"Post Bluff",type:"slider",val:8},{name:"Overvalue Hand?",type:"slider",val:2},
-    {name:"Bet Thin?",type:"slider",val:3},{name:"Post Fold Freq",type:"slider",val:2},
-  ]},
-  {id:"v2",name:"Bellatrix Lestrange",added:"Apr 2, 2025",photo:"",notes:[
-    {text:"Bet sizing totally random — 2x to 8x in same session. Cannot range assign from bet size.",date:"Apr 2, 2025  8:30 PM"}
-  ],attrs:[
-    {name:"Player type",type:"dropdown",val:"Maniac",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
-    {name:"Subtype",type:"dropdown",val:"Aggro",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
-    {name:"Pre Range",type:"slider",val:9},{name:"Pre Aggro",type:"slider",val:9},
-    {name:"Pre 3-Bet",type:"slider",val:9},{name:"Pre Bluff",type:"slider",val:9},
-    {name:"Pre Fold Freq",type:"slider",val:1},
-    {name:"Post Aggro",type:"slider",val:9},{name:"Post Bluff",type:"slider",val:9},{name:"Overvalue Hand?",type:"slider",val:8},
-    {name:"Bet Thin?",type:"slider",val:7},{name:"Post Fold Freq",type:"slider",val:1},
-  ]},
-  {id:"v3",name:"Draco Malfoy",added:"Apr 3, 2025",photo:"",notes:[
-    {text:"Folds river when board pairs — easy bluff target on scary boards.",date:"Apr 3, 2025  7:55 PM"},
-    {text:"Physical tell confirmed: breathing changes when behind. Hands go still when strong.",date:"Apr 3, 2025  10:10 PM"}
-  ],attrs:[
-    {name:"Player type",type:"dropdown",val:"Loose",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
-    {name:"Subtype",type:"dropdown",val:"Loose",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
-    {name:"Pre Range",type:"slider",val:6},{name:"Pre Aggro",type:"slider",val:5},
-    {name:"Pre 3-Bet",type:"slider",val:4},{name:"Pre Bluff",type:"slider",val:4},
-    {name:"Pre Fold Freq",type:"slider",val:4},
-    {name:"Post Aggro",type:"slider",val:5},{name:"Post Bluff",type:"slider",val:4},{name:"Overvalue Hand?",type:"slider",val:7},
-    {name:"Bet Thin?",type:"slider",val:4},{name:"Post Fold Freq",type:"slider",val:5},
-  ]},
-  {id:"v4",name:"Dolores Umbridge",added:"Apr 4, 2025",photo:"",notes:[
-    {text:"Only raises nutted hands. If she 3-bets, fold everything without exception.",date:"Apr 4, 2025  6:40 PM"}
-  ],attrs:[
-    {name:"Player type",type:"dropdown",val:"Nit",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
-    {name:"Subtype",type:"dropdown",val:"Passive",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
-    {name:"Pre Range",type:"slider",val:2},{name:"Pre Aggro",type:"slider",val:2},
-    {name:"Pre 3-Bet",type:"slider",val:1},{name:"Pre Bluff",type:"slider",val:1},
-    {name:"Pre Fold Freq",type:"slider",val:7},
-    {name:"Post Aggro",type:"slider",val:2},{name:"Post Bluff",type:"slider",val:1},{name:"Overvalue Hand?",type:"slider",val:6},
-    {name:"Bet Thin?",type:"slider",val:1},{name:"Post Fold Freq",type:"slider",val:3},
-  ]},
-  {id:"v5",name:"Peter Pettigrew",added:"Apr 5, 2025",photo:"",notes:[
-    {text:"Folds pre-flop constantly. When he plays, he has it. Avoid entirely.",date:"Apr 5, 2025  9:00 PM"}
-  ],attrs:[
-    {name:"Player type",type:"dropdown",val:"Nit",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
-    {name:"Subtype",type:"dropdown",val:"Passive",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
-    {name:"Pre Range",type:"slider",val:1},{name:"Pre Aggro",type:"slider",val:1},
-    {name:"Pre 3-Bet",type:"slider",val:1},{name:"Pre Bluff",type:"slider",val:1},
-    {name:"Pre Fold Freq",type:"slider",val:9},
-    {name:"Post Aggro",type:"slider",val:1},{name:"Post Bluff",type:"slider",val:1},{name:"Overvalue Hand?",type:"slider",val:4},
-    {name:"Bet Thin?",type:"slider",val:1},{name:"Post Fold Freq",type:"slider",val:5},
-  ]},
-  {id:"v6",name:"Lucius Malfoy",added:"Apr 6, 2025",photo:"",notes:[
-    {text:"Polarized bet sizing: small with bluffs, pot-size with value. Respect his big bets.",date:"Apr 6, 2025  8:15 PM"}
-  ],attrs:[
-    {name:"Player type",type:"dropdown",val:"Reg",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
-    {name:"Subtype",type:"dropdown",val:"Tight",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
-    {name:"Pre Range",type:"slider",val:5},{name:"Pre Aggro",type:"slider",val:4},
-    {name:"Pre 3-Bet",type:"slider",val:4},{name:"Pre Bluff",type:"slider",val:3},
-    {name:"Pre Fold Freq",type:"slider",val:5},
-    {name:"Post Aggro",type:"slider",val:6},{name:"Post Bluff",type:"slider",val:3},{name:"Overvalue Hand?",type:"slider",val:3},
-    {name:"Bet Thin?",type:"slider",val:2},{name:"Post Fold Freq",type:"slider",val:4},
-  ]},
+  {id:"a1",name:"Alan L",added:"Apr 5, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMyYzNlNTAiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZWNmMGYxIiBvcGFjaXR5PSIwLjM1Ij5BTDwvdGV4dD4KPC9zdmc+",pinnedNote:"Never bets without the nuts. Fold everything to his raises.",lastModified:1712000000000,notes:[{text:"Checked back the nuts on the river twice. Only bets when he has a monster.",date:"Apr 5, 2025  8:30 PM"}],attrs:[{name:"Player type",type:"dropdown",val:'OMC',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Passive',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:2},{name:"Post Aggro",type:"slider",val:1},{name:"Pre Aggro",type:"slider",val:1},{name:"Post Bluff",type:"slider",val:1},{name:"Pre 3-Bet",type:"slider",val:1},{name:"Bet Thin?",type:"slider",val:1},{name:"Pre Bluff",type:"slider",val:1},{name:"Overvalue Hand?",type:"slider",val:2},{name:"Pre Fold Freq",type:"slider",val:8},{name:"Post Fold Freq",type:"slider",val:8}]},
+  {id:"a2",name:"Bobby K",added:"Apr 5, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiM3ZjJjMmMiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZjVlNmU2IiBvcGFjaXR5PSIwLjM1Ij5CSzwvdGV4dD4KPC9zdmc+",pinnedNote:"Runs over the table but folds to resistance. 3-bet him light.",lastModified:1712000000000,notes:[{text:"Fired three barrels with jack high. Called down light and it was correct.",date:"Apr 5, 2025  9:45 PM"},{text:"Tilted after a bad beat and shoved pre with 72o. Watch for emotional play.",date:"Apr 5, 2025 11:02 PM"}],attrs:[{name:"Player type",type:"dropdown",val:'Maniac',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Aggro',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:9},{name:"Post Aggro",type:"slider",val:9},{name:"Pre Aggro",type:"slider",val:9},{name:"Post Bluff",type:"slider",val:8},{name:"Pre 3-Bet",type:"slider",val:8},{name:"Bet Thin?",type:"slider",val:7},{name:"Pre Bluff",type:"slider",val:9},{name:"Overvalue Hand?",type:"slider",val:6},{name:"Pre Fold Freq",type:"slider",val:1},{name:"Post Fold Freq",type:"slider",val:1}]},
+  {id:"a3",name:"Carol J",added:"Apr 6, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxYTRhMmUiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTZmNWVjIiBvcGFjaXR5PSIwLjM1Ij5DSjwvdGV4dD4KPC9zdmc+",pinnedNote:"Calls everything post but only enters with a hand. Value bet relentlessly.",lastModified:1712000000000,notes:[],attrs:[{name:"Player type",type:"dropdown",val:'Nitty-Fish',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Passive',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:2},{name:"Post Aggro",type:"slider",val:3},{name:"Pre Aggro",type:"slider",val:2},{name:"Post Bluff",type:"slider",val:1},{name:"Pre 3-Bet",type:"slider",val:1},{name:"Bet Thin?",type:"slider",val:1},{name:"Pre Bluff",type:"slider",val:1},{name:"Overvalue Hand?",type:"slider",val:7},{name:"Pre Fold Freq",type:"slider",val:6},{name:"Post Fold Freq",type:"slider",val:2}]},
+  {id:"a4",name:"Dave M",added:"Apr 6, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMyYzJjNWUiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTZlNmY1IiBvcGFjaXR5PSIwLjM1Ij5ETTwvdGV4dD4KPC9zdmc+",pinnedNote:"Solid fundamentals. Polarized sizing tells you where he is.",lastModified:1712000000000,notes:[{text:"Folded river to a pot-sized bet three times when board was scary. Note the pattern.",date:"Apr 6, 2025  7:55 PM"}],attrs:[{name:"Player type",type:"dropdown",val:'Reg',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Tight',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:4},{name:"Post Aggro",type:"slider",val:6},{name:"Pre Aggro",type:"slider",val:5},{name:"Post Bluff",type:"slider",val:3},{name:"Pre 3-Bet",type:"slider",val:4},{name:"Bet Thin?",type:"slider",val:5},{name:"Pre Bluff",type:"slider",val:3},{name:"Overvalue Hand?",type:"slider",val:3},{name:"Pre Fold Freq",type:"slider",val:5},{name:"Post Fold Freq",type:"slider",val:5}]},
+  {id:"a5",name:"Ellen W",added:"Apr 7, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiM0YTMwMDAiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZjVlZGUwIiBvcGFjaXR5PSIwLjM1Ij5FVzwvdGV4dD4KPC9zdmc+",pinnedNote:"",lastModified:1712000000000,notes:[{text:"Called off 200bb with middle pair on a four-flush board. No hand reading.",date:"Apr 7, 2025  6:40 PM"}],attrs:[{name:"Player type",type:"dropdown",val:'Rec',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Loose',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:7},{name:"Post Aggro",type:"slider",val:4},{name:"Pre Aggro",type:"slider",val:4},{name:"Post Bluff",type:"slider",val:5},{name:"Pre 3-Bet",type:"slider",val:3},{name:"Bet Thin?",type:"slider",val:4},{name:"Pre Bluff",type:"slider",val:4},{name:"Overvalue Hand?",type:"slider",val:7},{name:"Pre Fold Freq",type:"slider",val:3},{name:"Post Fold Freq",type:"slider",val:4}]},
+  {id:"a6",name:"Frank R",added:"Apr 7, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMzZDFhNGEiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZjBlNmY1IiBvcGFjaXR5PSIwLjM1Ij5GUjwvdGV4dD4KPC9zdmc+",pinnedNote:"",lastModified:1712000000000,notes:[{text:"Bet sizing is completely random. Cannot put him on a range from bet size alone.",date:"Apr 7, 2025  9:15 PM"},{text:"Called a 4-bet with 97 suited and flopped a straight. Dangerous when he hits.",date:"Apr 7, 2025 10:30 PM"}],attrs:[{name:"Player type",type:"dropdown",val:'Aggro-Fish',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Aggro',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:8},{name:"Post Aggro",type:"slider",val:8},{name:"Pre Aggro",type:"slider",val:8},{name:"Post Bluff",type:"slider",val:7},{name:"Pre 3-Bet",type:"slider",val:6},{name:"Bet Thin?",type:"slider",val:6},{name:"Pre Bluff",type:"slider",val:7},{name:"Overvalue Hand?",type:"slider",val:7},{name:"Pre Fold Freq",type:"slider",val:2},{name:"Post Fold Freq",type:"slider",val:2}]},
+  {id:"a7",name:"Gary S",added:"Apr 8, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxYTNhNGEiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTBlZmY1IiBvcGFjaXR5PSIwLjM1Ij5HUzwvdGV4dD4KPC9zdmc+",pinnedNote:"Tight and honest. Easy to play against.",lastModified:1712000000000,notes:[],attrs:[{name:"Player type",type:"dropdown",val:'Nit',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Tight',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:2},{name:"Post Aggro",type:"slider",val:2},{name:"Pre Aggro",type:"slider",val:2},{name:"Post Bluff",type:"slider",val:1},{name:"Pre 3-Bet",type:"slider",val:1},{name:"Bet Thin?",type:"slider",val:1},{name:"Pre Bluff",type:"slider",val:1},{name:"Overvalue Hand?",type:"slider",val:2},{name:"Pre Fold Freq",type:"slider",val:7},{name:"Post Fold Freq",type:"slider",val:6}]},
+  {id:"a8",name:"Helen T",added:"Apr 8, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiM0YTFhMWEiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZjVlMGUwIiBvcGFjaXR5PSIwLjM1Ij5IVDwvdGV4dD4KPC9zdmc+",pinnedNote:"",lastModified:1712000000000,notes:[],attrs:[{name:"Player type",type:"dropdown",val:'Station',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Passive',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:6},{name:"Post Aggro",type:"slider",val:3},{name:"Pre Aggro",type:"slider",val:2},{name:"Post Bluff",type:"slider",val:2},{name:"Pre 3-Bet",type:"slider",val:2},{name:"Bet Thin?",type:"slider",val:3},{name:"Pre Bluff",type:"slider",val:1},{name:"Overvalue Hand?",type:"slider",val:8},{name:"Pre Fold Freq",type:"slider",val:2},{name:"Post Fold Freq",type:"slider",val:1}]},
+  {id:"a9",name:"Ivan B",added:"Apr 9, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxYTRhM2EiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTBmNWVlIiBvcGFjaXR5PSIwLjM1Ij5JQjwvdGV4dD4KPC9zdmc+",pinnedNote:"Deep stack, plays for action. Will call off stacks with top pair.",lastModified:1712000000000,notes:[{text:"Called a pot-sized river bet with ace-high on a paired board. Extract maximum.",date:"Apr 9, 2025  8:00 PM"}],attrs:[{name:"Player type",type:"dropdown",val:'Whale',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Loose',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:8},{name:"Post Aggro",type:"slider",val:7},{name:"Pre Aggro",type:"slider",val:6},{name:"Post Bluff",type:"slider",val:5},{name:"Pre 3-Bet",type:"slider",val:5},{name:"Bet Thin?",type:"slider",val:6},{name:"Pre Bluff",type:"slider",val:4},{name:"Overvalue Hand?",type:"slider",val:8},{name:"Pre Fold Freq",type:"slider",val:3},{name:"Post Fold Freq",type:"slider",val:2}]},
+  {id:"a0",name:"Jake C",added:"Apr 9, 2025",photo:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMzYTNhMWEiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQwIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZjVmNWUwIiBvcGFjaXR5PSIwLjM1Ij5KQzwvdGV4dD4KPC9zdmc+",pinnedNote:"",lastModified:1712000000000,notes:[{text:"Check-raised flop with air, barreled turn, checked river. Balanced and dangerous.",date:"Apr 9, 2025  9:50 PM"}],attrs:[{name:"Player type",type:"dropdown",val:'Pro',opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},{name:"Subtype",type:"dropdown",val:'Tight',opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},{name:"Pre Range",type:"slider",val:4},{name:"Post Aggro",type:"slider",val:6},{name:"Pre Aggro",type:"slider",val:5},{name:"Post Bluff",type:"slider",val:4},{name:"Pre 3-Bet",type:"slider",val:5},{name:"Bet Thin?",type:"slider",val:6},{name:"Pre Bluff",type:"slider",val:4},{name:"Overvalue Hand?",type:"slider",val:3},{name:"Pre Fold Freq",type:"slider",val:5},{name:"Post Fold Freq",type:"slider",val:5}]}
 ];
 
-const stored = localStorage.getItem('vc7');
+const stored = localStorage.getItem('vc8');
 let VV = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(SEED));
 let cidx = 0, backs = {}, ulocked = {}, editId = null;
 
-function save(){ localStorage.setItem('vc7', JSON.stringify(VV)); }
+function save(){ localStorage.setItem('vc8', JSON.stringify(VV)); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2); }
 function fv(v){ return String(Math.round(parseFloat(v)||0)); }
 function vc(v){ const p=parseFloat(v); if(p>=7)return'p'; if(p<=3)return'n'; return'z'; }
@@ -461,11 +403,11 @@ function bCard(v, i){
       </div>
       <div class="pinned-note" id="pn-${v.id}">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;">
-          <div class="pn-text" id="pn-text-${v.id}">${v.pinnedNote||'<span style="opacity:.45;">No scout report yet.</span>'}</div>
+          <div class="pn-text" id="pn-text-${v.id}">${v.pinnedNote?v.pinnedNote:"<span style=\"opacity:.45;\">No scout report yet.</span>"}</div>
           <button class="pinned-edit" onclick="editPinned('${v.id}')">edit</button>
         </div>
         <div id="pn-edit-${v.id}" style="display:none;margin-top:6px;">
-          <textarea id="pn-ta-${v.id}" style="width:100%;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r);color:var(--t1);padding:8px 10px;font-size:14px;font-family:var(--font);resize:none;height:72px;line-height:1.3;">${v.pinnedNote||''}</textarea>
+          <textarea id="pn-ta-${v.id}" style="width:100%;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r);color:var(--t1);padding:8px 10px;font-size:14px;font-family:var(--font);resize:none;height:72px;line-height:1.3;">${v.pinnedNote||""}</textarea>
           <div style="display:flex;gap:6px;margin-top:5px;">
             <button onclick="savePinned('${v.id}')" style="background:var(--t1);color:var(--card);border:none;border-radius:var(--r);padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);">Save</button>
             <button onclick="cancelPinned('${v.id}')" style="background:none;border:1px solid var(--brd2);border-radius:var(--r);padding:6px 12px;font-size:13px;color:var(--t2);cursor:pointer;font-family:var(--font);">Cancel</button>
@@ -1023,17 +965,16 @@ function buildReadScript(v){
   const seen = new Set();
   const dedupedParts = parts.filter(p => { if(seen.has(p)) return false; seen.add(p); return true; });
 
+  // ── IF NO OUTLIERS (pre/post sections empty) ──
+  if(dedupedParts.length===1){
+    if(type==='Reg'||type==='Pro') dedupedParts.push('No significant deviations recorded yet.');
+    else dedupedParts.push('No attributes recorded yet.');
+  }
+
   // ── LATEST TIMESTAMPED NOTE ──
   if(v.notes&&v.notes.length) dedupedParts.push('Latest note. ' + v.notes[0].text);
 
   return dedupedParts.join(' ');
-
-  // ── IF NO OUTLIERS ──
-  if(parts.length===1){
-    if(type==='Reg'||type==='Pro') parts.push('No significant deviations recorded yet.');
-    else if(!v.notes||!v.notes.length) parts.push('No attributes recorded yet.');
-  }
-
 }
 
 /* ── CROP SYSTEM ── */
