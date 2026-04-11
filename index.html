@@ -1375,36 +1375,63 @@ function updateLastSyncDisplay(){
   if(el) el.textContent = ts ? new Date(parseInt(ts)).toLocaleString() : 'Never';
 }
 
+// Apps Script CORS workaround: use fetch with no-cors for fire-and-forget,
+// and a script tag injection for GET requests that need a response
+function scriptFetch(url, params){
+  return new Promise((resolve, reject) => {
+    const cbName = 'ff_cb_' + Date.now();
+    const fullUrl = url + '?' + new URLSearchParams({...params, callback: cbName});
+    window[cbName] = (data) => {
+      delete window[cbName];
+      document.head.removeChild(script);
+      resolve(data);
+    };
+    const script = document.createElement('script');
+    script.src = fullUrl;
+    script.onerror = () => { delete window[cbName]; reject(new Error('Script load failed')); };
+    document.head.appendChild(script);
+    setTimeout(()=>{ if(window[cbName]){ delete window[cbName]; reject(new Error('Timeout')); }}, 30000);
+  });
+}
+
+async function apsFetch(url, body){
+  // Use fetch with mode:'no-cors' won't give us a response,
+  // so we use a form submission trick via an invisible iframe for POST
+  // and URLSearchParams GET for reads
+  const method = body ? 'POST' : 'GET';
+  const fetchUrl = body ? url : url + '?' + new URLSearchParams(body||{});
+  try {
+    const res = await fetch(method==='POST' ? url : fetchUrl, {
+      method,
+      ...(body ? {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams({payload: JSON.stringify(body)})
+      } : {})
+    });
+    return await res.json();
+  } catch(e) {
+    // Fallback: try as GET with encoded payload
+    const getUrl = url + '?payload=' + encodeURIComponent(JSON.stringify(body||{}));
+    const res2 = await fetch(getUrl);
+    return await res2.json();
+  }
+}
+
 async function syncPush(){
   const url = getScriptUrl();
   if(!url){ setSyncStatus('No script URL set. Paste your Apps Script URL above.', true); return; }
   setSyncStatus('Pushing to Google Sheets...');
   try {
-    // Prepare villains — strip photo data, keep photoDriveId
-    const payload = VV.map(v => ({
-      ...v,
-      photo: '',  // never send base64 in push — use uploadPhoto separately
-    }));
-    const res = await fetch(url, {
-      method:'POST',
-      body: JSON.stringify({action:'push', villains:payload}),
-      headers:{'Content-Type':'application/json'}
-    });
-    const data = await res.json();
+    const payload = VV.map(v => ({...v, photo:''}));
+    const data = await apsFetch(url, {action:'push', villains: JSON.stringify(payload)});
     if(data.error) throw new Error(data.error);
-    // Now upload any photos that don't have a Drive ID yet
     let photoCount = 0;
     for(const v of VV){
       if(v.photo && v.photo.startsWith('data:') && !v.photoDriveId){
         try {
-          const pRes = await fetch(url, {
-            method:'POST',
-            body: JSON.stringify({action:'uploadPhoto', id:v.id, photoBase64:v.photo}),
-            headers:{'Content-Type':'application/json'}
-          });
-          const pData = await pRes.json();
+          const pData = await apsFetch(url, {action:'uploadPhoto', id:v.id, photoBase64:v.photo});
           if(pData.driveId){ v.photoDriveId = pData.driveId; photoCount++; }
-        } catch(e){ /* photo upload failed, continue */ }
+        } catch(e){}
       }
     }
     save();
@@ -1421,8 +1448,7 @@ async function syncPull(){
   if(!url){ setSyncStatus('No script URL set. Paste your Apps Script URL above.', true); return; }
   setSyncStatus('Pulling from Google Sheets...');
   try {
-    const res = await fetch(url + '?action=pull');
-    const data = await res.json();
+    const data = await apsFetch(url + '?action=pull');
     if(data.error) throw new Error(data.error);
     const incoming = data.villains || [];
     let added = 0, updated = 0, skipped = 0;
@@ -1430,22 +1456,17 @@ async function syncPull(){
       if(!sv.id) return;
       const local = VV.find(x=>x.id===sv.id);
       if(!local){
-        // New from Sheets — fetch photo URL if has driveId
         if(sv.photoDriveId) sv.photo = 'https://drive.google.com/uc?export=view&id='+sv.photoDriveId;
         VV.push(sv); added++;
       } else {
         const localMod = local.lastModified || 0;
         const sheetMod = sv.lastModified || 0;
         if(sheetMod > localMod){
-          // Sheet is newer — update but preserve local photo if sheet has no drive photo
           if(sv.photoDriveId) sv.photo = 'https://drive.google.com/uc?export=view&id='+sv.photoDriveId;
           else sv.photo = local.photo;
-          const idx = VV.indexOf(local);
-          VV[idx] = sv;
+          VV[VV.indexOf(local)] = sv;
           updated++;
-        } else {
-          skipped++;
-        }
+        } else { skipped++; }
       }
     });
     save(); ra();
