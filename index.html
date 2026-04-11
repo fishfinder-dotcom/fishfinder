@@ -693,95 +693,95 @@ function buildReadScript(v){
 
   // ── PHRASE LIBRARIES ──
   const phrases = {
-    'Pre Range': {
-      1:"Super tight.',
-      2:"Very tight. Snug range.',
-      3:"Tighter than most.',
+    "Pre Range": {
+      1:"Super tight.",
+      2:"Very tight. Snug range.",
+      3:"Tighter than most.",
       4:null, 5:null, 6:null,
-      7:"Wider than most.',
-      8:"Very wide range.',
-      9:"Super wide. Plays any two.'
+      7:"Wider than most.",
+      8:"Very wide range.",
+      9:"Super wide. Plays any two."
     },
-    'Pre Aggro': {
-      1:"Completely passive pre.',
-      2:"Very passive pre.',
-      3:"Mostly passive pre.',
+    "Pre Aggro": {
+      1:"Completely passive pre.",
+      2:"Very passive pre.",
+      3:"Mostly passive pre.",
       4:null, 5:null, 6:null,
-      7:"Can be aggressive pre.',
-      8:"Very aggressive pre.',
-      9:"Super aggressive pre.'
+      7:"Can be aggressive pre.",
+      8:"Very aggressive pre.",
+      9:"Super aggressive pre."
     },
-    'Pre 3-Bet': {
+    "Pre 3-Bet": {
       1:"3-bets aces and kings and that's it.",
-      2:"3-bets queen-queen plus and ace-king.',
-      3:"3-bets tens plus and some suited broadways.',
-      4:"Has a proper 3-bet range. Probably ace-five suited as a bluff.', 5:"Has a proper 3-bet range. Probably ace-five suited as a bluff.', 6:"Has a proper 3-bet range. Probably ace-five suited as a bluff.',
-      7:"Can 3-bet smaller pairs, suited gappers, and all suited aces.',
-      8:"3-bets all their opening hands. Never flats pre.',
-      9:"3-bets, never flats, and 3-bet bluffs too much.'
+      2:"3-bets queen-queen plus and ace-king.",
+      3:"3-bets tens plus and some suited broadways.",
+      4:"Has a proper 3-bet range. Probably ace-five suited as a bluff.", 5:"Has a proper 3-bet range. Probably ace-five suited as a bluff.", 6:"Has a proper 3-bet range. Probably ace-five suited as a bluff.",
+      7:"Can 3-bet smaller pairs, suited gappers, and all suited aces.",
+      8:"3-bets all their opening hands. Never flats pre.",
+      9:"3-bets, never flats, and 3-bet bluffs too much."
     },
-    'Pre Bluff': {
-      1:"No bluffs pre.',
-      2:"No bluffs pre.',
-      3:"No bluffs pre.',
+    "Pre Bluff": {
+      1:"No bluffs pre.",
+      2:"No bluffs pre.",
+      3:"No bluffs pre.",
       4:null, 5:null, 6:null,
-      7:"Has some bluffs pre.',
-      8:"Has some bluffs pre.',
-      9:"Has some bluffs pre.'
+      7:"Has some bluffs pre.",
+      8:"Has some bluffs pre.",
+      9:"Has some bluffs pre."
     },
-    'Pre Fold Freq': {
-      1:"Always sees a flop.',
-      2:"Always sees a flop.',
-      3:"Rarely folds pre. Likes to see a flop.',
+    "Pre Fold Freq": {
+      1:"Always sees a flop.",
+      2:"Always sees a flop.",
+      3:"Rarely folds pre. Likes to see a flop.",
       4:null, 5:null, 6:null,
-      7:"Borders on over-folding pre.',
-      8:"Definitely over-folds pre.',
-      9:"Definitely over-folds pre.'
+      7:"Borders on over-folding pre.",
+      8:"Definitely over-folds pre.",
+      9:"Definitely over-folds pre."
     },
-    'Post Aggro': {
-      1:"Completely passive post.',
-      2:"Very passive post.',
-      3:"Mostly passive post.',
+    "Post Aggro": {
+      1:"Completely passive post.",
+      2:"Very passive post.",
+      3:"Mostly passive post.",
       4:null, 5:null, 6:null,
-      7:"Can be aggressive post.',
-      8:"Very aggressive post.',
-      9:"Super aggressive post.'
+      7:"Can be aggressive post.",
+      8:"Very aggressive post.",
+      9:"Super aggressive post."
     },
-    'Post Bluff': {
-      1:"Never bluffs post.',
-      2:"Never bluffs post.',
-      3:"Can find the obvious river bluffs.',
-      4:"Can find the obvious river bluffs.', 5:"Has a good post-flop bluff range.', 6:"Has a good post-flop bluff range.',
+    "Post Bluff": {
+      1:"Never bluffs post.",
+      2:"Never bluffs post.",
+      3:"Can find the obvious river bluffs.",
+      4:"Can find the obvious river bluffs.", 5:"Has a good post-flop bluff range.", 6:"Has a good post-flop bluff range.",
       7:null,
-      8:"Likes to bluff too much.',
-      9:"Over-bluffs flops and rivers.'
+      8:"Likes to bluff too much.",
+      9:"Over-bluffs flops and rivers."
     },
-    'Overvalue Hand?': {
-      1:"Understands hand strength.',
-      2:"Understands hand strength.',
-      3:"Understands hand strength.',
+    "Overvalue Hand?": {
+      1:"Understands hand strength.",
+      2:"Understands hand strength.",
+      3:"Understands hand strength.",
       4:null, 5:null, 6:null,
-      7:"Overvalues top pair.',
+      7:"Overvalues top pair.",
       8:"Doesn't understand hand strength.",
       9:"Doesn't understand hand strength."
     },
-    'Bet Thin?': {
-      1:"Will check river with everything but the nuts.',
-      2:"Scared money. Won"t bet scary rivers.",
-      3:"Can bet river with second pair.',
-      4:"Understands thin river bets.', 5:"Understands thin river bets.', 6:"Understands thin river bets.',
-      7:"Can bet river light.',
-      8:"Will bet river light.',
-      9:"If you check, he always bets river.'
+    "Bet Thin?": {
+      1:"Will check river with everything but the nuts.",
+      2:"Scared money. Won't bet scary rivers.",
+      3:"Can bet river with second pair.",
+      4:"Understands thin river bets.", 5:"Understands thin river bets.", 6:"Understands thin river bets.",
+      7:"Can bet river light.",
+      8:"Will bet river light.",
+      9:"If you check, he always bets river."
     },
-    "Post Fold Freq': {
+    "Post Fold Freq": {
       1:"Don't bluff turn or river.",
       2:"Don't bluff turn or river.",
-      3:"Only bluff post in the best spots.',
-      4:"Only bluff post in the best spots.', 5:"Bluff them appropriately.', 6:"Bluff them appropriately.',
-      7:"Can be pushed off a hand.',
-      8:"Scared money.',
-      9:"Scared money.'
+      3:"Only bluff post in the best spots.",
+      4:"Only bluff post in the best spots.", 5:"Bluff them appropriately.", 6:"Bluff them appropriately.",
+      7:"Can be pushed off a hand.",
+      8:"Scared money.",
+      9:"Scared money."
     }
   };
 
