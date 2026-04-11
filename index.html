@@ -256,10 +256,13 @@ table.dt tr:active td{background:var(--surf);}
         <div style="font-size:11px;color:var(--t3);margin-top:4px;">Paste the URL from your Google Apps Script deployment.</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <button onclick="syncPush()" style="background:var(--t1);color:var(--card);border:none;border-radius:var(--r);padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);">&#8593; Push to Google Sheets</button>
-        <div style="font-size:12px;color:var(--t3);text-align:center;">Sends all phone records to Sheets. Phone wins on conflicts.</div>
+        <div id="sync-push-section">
+          <button onclick="syncPush()" style="background:var(--t1);color:var(--card);border:none;border-radius:var(--r);padding:13px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);width:100%;">&#8593; Push to Google Sheets</button>
+          <div style="font-size:12px;color:var(--t3);text-align:center;margin-top:4px;">Sends all records to Sheets. Phone wins on conflicts.</div>
+        </div>
+        <div id="sync-push-note" style="display:none;background:var(--surf);border-radius:var(--r);padding:10px 12px;font-size:13px;color:var(--t2);">Push is available on desktop. Open Fishfinder in Chrome on your Chromebook to push records to Google Sheets.</div>
         <button onclick="syncPull()" style="background:none;border:1px solid var(--brd2);border-radius:var(--r);padding:13px;font-size:15px;font-weight:500;cursor:pointer;font-family:var(--font);color:var(--t1);">&#8595; Pull from Google Sheets</button>
-        <div style="font-size:12px;color:var(--t3);text-align:center;">Pulls Sheets records to phone. Newer record wins on conflicts.</div>
+        <div style="font-size:12px;color:var(--t3);text-align:center;">Pulls Sheets records to this device. Newer record wins on conflicts.</div>
       </div>
       <div id="sync-status" style="background:var(--surf);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--t2);min-height:48px;display:none;"></div>
       <div style="border-top:1px solid var(--brd);padding-top:12px;">
@@ -1342,6 +1345,12 @@ function openSync(){
   const inp = document.getElementById('script-url-input');
   if(inp) inp.value = SCRIPT_URL_stored() || '';
   updateLastSyncDisplay();
+  // Show push only on non-touch desktop (Chromebook)
+  const isTouch = ('ontouchstart' in window);
+  const pushSection = document.getElementById('sync-push-section');
+  const pushNote = document.getElementById('sync-push-note');
+  if(pushSection) pushSection.style.display = isTouch ? 'none' : 'block';
+  if(pushNote) pushNote.style.display = isTouch ? 'block' : 'none';
   wrap.style.display='flex';
 }
 
@@ -1423,13 +1432,24 @@ async function syncPush(){
   setSyncStatus('Pushing to Google Sheets...');
   try {
     const payload = VV.map(v => ({...v, photo:''}));
-    const data = await apsFetch(url, {action:'push', villains: JSON.stringify(payload)});
+    // POST with URL-encoded body
+    const pushRes = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'payload=' + encodeURIComponent(JSON.stringify({action:'push', villains:payload}))
+    });
+    const data = await pushRes.json();
     if(data.error) throw new Error(data.error);
     let photoCount = 0;
     for(const v of VV){
       if(v.photo && v.photo.startsWith('data:') && !v.photoDriveId){
         try {
-          const pData = await apsFetch(url, {action:'uploadPhoto', id:v.id, photoBase64:v.photo});
+          const pRes = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'payload=' + encodeURIComponent(JSON.stringify({action:'uploadPhoto', id:v.id, photoBase64:v.photo}))
+          });
+          const pData = await pRes.json();
           if(pData.driveId){ v.photoDriveId = pData.driveId; photoCount++; }
         } catch(e){}
       }
@@ -1448,7 +1468,9 @@ async function syncPull(){
   if(!url){ setSyncStatus('No script URL set. Paste your Apps Script URL above.', true); return; }
   setSyncStatus('Pulling from Google Sheets...');
   try {
-    const data = await apsFetch(url + '?action=pull');
+    // GET works reliably on all devices — no CORS issue
+    const res = await fetch(url + '?action=pull');
+    const data = await res.json();
     if(data.error) throw new Error(data.error);
     const incoming = data.villains || [];
     let added = 0, updated = 0, skipped = 0;
