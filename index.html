@@ -111,7 +111,7 @@ body{font-family:var(--font);color:var(--t1);display:flex;flex-direction:column;
 .note{background:var(--surf);border-radius:var(--r);padding:9px 11px;}
 .nd{font-size:11px;color:var(--t3);font-family:var(--mono);margin-bottom:4px;}
 .nt{font-size:14px;color:var(--t1);line-height:1.45;}
-.nadd{display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--brd);flex-shrink:0;}
+.nadd{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--brd);flex-shrink:0;}
 .nadd textarea{flex:1;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r);color:var(--t1);padding:8px 10px;font-size:14px;font-family:var(--font);resize:none;height:38px;line-height:1.3;}
 .nadd textarea:focus{outline:none;border-color:var(--t2);}
 .nadd button{background:var(--t1);color:var(--card);border:none;border-radius:var(--r);padding:8px 13px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
@@ -286,9 +286,9 @@ const ADEFS = [
   {name:"Pre Aggro",       type:"slider", val:null},
   {name:"Post Bluff",      type:"slider", val:null},
   {name:"Pre 3-Bet",       type:"slider", val:null},
-  {name:"Overvalue Hand?", type:"slider", val:null},
-  {name:"Pre Bluff",       type:"slider", val:null},
   {name:"Bet Thin?",       type:"slider", val:null},
+  {name:"Pre Bluff",       type:"slider", val:null},
+  {name:"Overvalue Hand?", type:"slider", val:null},
   {name:"Pre Fold Freq",   type:"slider", val:null},
   {name:"Post Fold Freq",  type:"slider", val:null},
 ];
@@ -304,8 +304,8 @@ const FORM_ORDER = [
   {name:"Pre Fold Freq", type:"slider"},
   {name:"Post Aggro",    type:"slider"},
   {name:"Post Bluff",    type:"slider"},
-  {name:"Overvalue Hand?",type:"slider"},
   {name:"Bet Thin?",     type:"slider"},
+  {name:"Overvalue Hand?",type:"slider"},
   {name:"Post Fold Freq",type:"slider"},
 ];
 
@@ -451,11 +451,11 @@ function bCard(v, i){
         <div><h3>Session notes</h3><div class="bk-sub">${v.name||'Unknown'}</div></div>
         <button class="bk-close" onclick="clBk('${v.id}')">&#8595; close</button>
       </div>
-      <div class="nlist" id="nl-${v.id}">${noteH}</div>
       <div class="nadd">
         <textarea id="ni-${v.id}" placeholder="Add a note..."></textarea>
         <button onclick="addN('${v.id}')">Save</button>
       </div>
+      <div class="nlist" id="nl-${v.id}">${noteH}</div>
     </div>
   </div>`;
 }
@@ -703,6 +703,22 @@ function buildReadScript(v){
     'Pro':        `You have ${v.name} tagged as Pro${subtype?' with a subtype of '+subtype:''}. Solid fundamentals. Only the outliers matter.`,
   };
   parts.push(prologues[type] || `You have ${v.name} tagged as ${type}${subtype?' with a subtype of '+subtype:''}.`);
+
+  // ── PRE-FLOP SCORE ──
+  const preScoreAttrs = ['Pre Range','Pre Aggro','Pre 3-Bet','Pre Bluff'];
+  const preVals = preScoreAttrs.map(n => getAttr(n));
+  if(preVals.every(v => v !== null)){
+    const preScore = preVals.reduce((a,b) => a+b, 0);
+    parts.push(`${v.name} has a pre-flop score of ${preScore}.`);
+  }
+
+  // ── POST-FLOP SCORE ──
+  const postScoreAttrs = ['Post Aggro','Post Bluff','Bet Thin?'];
+  const postVals = postScoreAttrs.map(n => getAttr(n));
+  if(postVals.every(v => v !== null)){
+    const postScore = postVals.reduce((a,b) => a+b, 0);
+    parts.push(`${v.name} has a post-flop score of ${postScore}.`);
+  }
 
   // ── PHRASE LIBRARIES ──
   const phrases = {
