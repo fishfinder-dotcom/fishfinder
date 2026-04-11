@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Villain Cards">
+<title>Villain Cards</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#f7f6f3;--card:#ffffff;--surf:#f0eeeb;--surf2:#e5e2dc;
+  --t1:#181714;--t2:#6a665f;--t3:#a8a39c;
+  --brd:#e0ddd7;--brd2:#c8c4bc;
+  --grn:#1a6e3c;--red:#a82318;
+  --grn-bg:#eaf5ef;--red-bg:#faeaea;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:10px;--rl:14px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#111009;--card:#1b1a16;--surf:#232118;--surf2:#2d2c26;
+    --t1:#f2ede6;--t2:#c8c2b8;--t3:#52504a;
+    --brd:#2d2c26;--brd2:#3d3c35;
+    --grn:#3dbf72;--red:#e06050;
+    --grn-bg:#0c2818;--red-bg:#2a100d;
+  }
+}
+
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);}
+body{font-family:var(--font);color:var(--t1);display:flex;flex-direction:column;font-size:16px;}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--brd);flex-shrink:0;}
+.hdr-btns{display:flex;gap:8px;}
+.btn{background:none;border:1px solid var(--brd2);border-radius:var(--r);padding:8px 14px;font-size:14px;color:var(--t2);cursor:pointer;font-family:var(--font);white-space:nowrap;font-weight:500;}
+.btn:active{background:var(--surf);}
+.btn.pri{background:var(--t1);color:var(--card);border-color:var(--t1);}
+.btn.pri:active{opacity:.8;}
+
+/* TABS */
+.tabs{display:flex;gap:3px;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--brd);flex-shrink:0;}
+.tab{flex:1;text-align:center;padding:8px 4px;font-size:14px;color:var(--t2);border-radius:var(--r);cursor:pointer;border:none;background:none;font-family:var(--font);font-weight:500;}
+.tab.on{background:var(--surf2);color:var(--t1);}
+
+/* MAIN */
+.main{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;}
+
+/* SINGLE */
+#vs{display:flex;flex-direction:column;align-items:center;flex:1;overflow:hidden;}
+.car-wrap{flex:1;width:100%;overflow:hidden;position:relative;}
+.c-track{display:flex;height:100%;}
+.c-slot{flex-shrink:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:4px 8px;}
+
+/* THE CARD */
+.vc{width:min(340px,95vw);max-height:calc(100vh - 118px);background:var(--card);border:1px solid var(--brd);border-radius:var(--rl);display:flex;flex-direction:column;position:relative;overflow:hidden;}
+
+.vc-photo{width:100%;padding-top:52%;position:relative;background:var(--surf);flex-shrink:0;border-radius:var(--rl) var(--rl) 0 0;overflow:hidden;}
+.vc-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;}
+.vc-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--t3);}
+.vc-ph svg{opacity:.2;}
+.vc-ph span{font-size:13px;}
+.tbadge{position:absolute;top:9px;right:9px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;font-family:var(--mono);}
+.tm{background:#e8eef8;color:#1a3d7a;}
+@media(prefers-color-scheme:dark){.tm{background:#0d1f3a;color:#6a9de0;}}
+.seq{position:absolute;top:9px;left:9px;background:rgba(0,0,0,.38);color:#fff;font-size:11px;padding:3px 8px;border-radius:20px;font-family:var(--mono);}
+.note-badge{position:absolute;bottom:9px;right:9px;background:rgba(0,0,0,.45);color:#fff;font-size:11px;padding:3px 8px;border-radius:20px;font-family:var(--mono);display:flex;align-items:center;gap:3px;}
+.note-badge::before{content:'';display:inline-block;width:8px;height:8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/%3E%3C/svg%3E") no-repeat center/contain;}
+
+.vc-namebar{padding:7px 13px 5px;border-bottom:1px solid var(--brd);flex-shrink:0;}
+.vc-namebar h2{font-size:18px;font-weight:600;letter-spacing:-.3px;line-height:1.1;}
+.vc-namebar .meta{font-size:12px;color:var(--t3);margin-top:2px;font-family:var(--mono);}
+
+/* ATTRS — 2-col grid, no sliders */
+.attrs{padding:5px 10px 4px;display:grid;grid-template-columns:1fr 1fr;gap:5px 8px;flex:1;overflow:hidden;}
+.ar{display:flex;flex-direction:column;gap:2px;}
+.ar.pre{background:var(--surf);border-radius:6px;padding:3px 5px;}
+.al{font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);font-weight:600;}
+.av{font-size:20px;font-weight:600;font-family:var(--mono);line-height:1.1;}
+.av.p{color:var(--grn);}.av.n{color:var(--red);}.av.z{color:var(--t2);}
+.av.drop{font-size:14px;font-weight:500;font-family:var(--font);color:var(--t1);}
+
+.vc-hint{text-align:center;font-size:11px;color:var(--t3);padding:3px 0;flex-shrink:0;letter-spacing:.3px;}
+
+/* DOTS */
+.dots{display:flex;justify-content:center;gap:5px;padding:4px 0 2px;flex-shrink:0;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--brd2);}
+.dot.on{background:var(--t1);width:16px;border-radius:3px;}
+
+/* LOCK — inline in namebar */
+.lock-inline{width:34px;height:34px;border-radius:50%;background:var(--surf);border:1.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.lock-inline.open{border-color:var(--grn);background:var(--grn-bg);}
+.lock-inline svg{width:16px;height:16px;stroke:var(--t2);stroke-width:2;fill:none;}
+.lock-inline.open svg{stroke:var(--grn);}
+.edit-acts{display:flex;gap:5px;flex-shrink:0;}
+.ea{background:var(--card);border:1px solid var(--brd2);border-radius:var(--r);padding:5px 11px;font-size:12px;color:var(--t2);cursor:pointer;font-family:var(--font);font-weight:500;}
+.ea.del{border-color:var(--red);color:var(--red);}
+
+/* BACK */
+.vc-back{position:absolute;inset:0;background:var(--card);transform:translateY(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-radius:var(--rl);z-index:5;}
+.vc-back.open{transform:translateY(0);}
+.bk-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-bottom:1px solid var(--brd);flex-shrink:0;}
+.bk-hdr h3{font-size:15px;font-weight:600;}
+.bk-sub{font-size:12px;color:var(--t3);font-family:var(--mono);}
+.bk-close{background:none;border:1px solid var(--brd2);border-radius:var(--r);padding:5px 11px;font-size:12px;color:var(--t2);cursor:pointer;font-family:var(--font);}
+.nlist{flex:1;overflow-y:auto;padding:8px 11px;display:flex;flex-direction:column;gap:7px;}
+.note{background:var(--surf);border-radius:var(--r);padding:9px 11px;}
+.nd{font-size:11px;color:var(--t3);font-family:var(--mono);margin-bottom:4px;}
+.nt{font-size:14px;color:var(--t1);line-height:1.45;}
+.nadd{display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--brd);flex-shrink:0;}
+.nadd textarea{flex:1;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r);color:var(--t1);padding:8px 10px;font-size:14px;font-family:var(--font);resize:none;height:38px;line-height:1.3;}
+.nadd textarea:focus{outline:none;border-color:var(--t2);}
+.nadd button{background:var(--t1);color:var(--card);border:none;border-radius:var(--r);padding:8px 13px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+
+/* GRID */
+#vg{display:none;overflow-y:auto;padding:10px;gap:9px;grid-template-columns:1fr 1fr;align-content:start;}
+.mc{background:var(--card);border:1px solid var(--brd);border-radius:var(--rl);overflow:hidden;cursor:pointer;}
+.mc:active{border-color:var(--brd2);}
+.mc-ph{width:100%;padding-top:75%;position:relative;background:var(--surf);}
+.mc-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;}
+.mc-phe{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.mc-phe svg{opacity:.12;}
+.mc-name{position:absolute;top:0;left:0;right:0;padding:5px 7px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 100%);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4;}
+.mc-body{padding:5px 7px 7px;}
+.mc-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.tg{font-size:11px;padding:2px 7px;border-radius:4px;font-family:var(--mono);font-weight:500;}
+.tg.p{background:var(--grn-bg);color:var(--grn);}.tg.n{background:var(--red-bg);color:var(--red);}.tg.z{background:var(--surf2);color:var(--t2);}
+
+/* TABLE */
+#vt{display:none;overflow:auto;padding:10px;}
+.sort-bar{display:flex;gap:6px;padding:0 0 10px;flex-wrap:wrap;}
+.sort-pill{background:none;border:1px solid var(--brd2);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--t2);cursor:pointer;font-family:var(--font);font-weight:500;white-space:nowrap;}
+.sort-pill.on{background:var(--t1);color:var(--card);border-color:var(--t1);}
+.sort-pill:active{opacity:.8;}
+table.dt{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto;}
+table.dt th{background:var(--surf);color:var(--t3);padding:7px 6px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--brd);white-space:nowrap;position:sticky;top:0;}
+table.dt td{padding:8px 6px;border-bottom:1px solid var(--brd);color:var(--t1);vertical-align:middle;}
+table.dt tr:active td{background:var(--surf);}
+.tth{width:32px;height:32px;border-radius:6px;object-fit:cover;object-position:top;display:block;}
+.tphe{width:32px;height:32px;border-radius:6px;background:var(--surf2);display:inline-flex;align-items:center;justify-content:center;}
+
+/* MODAL */
+#mwrap{display:none;position:absolute;inset:0;background:var(--bg);z-index:50;flex-direction:column;justify-content:flex-end;}
+#mwrap.on{display:flex;}
+.modal{background:var(--card);border-radius:0;width:100%;height:100%;display:flex;flex-direction:column;}
+.mhdr{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--brd);flex-shrink:0;}
+.mhdr h2{font-size:17px;font-weight:600;}
+.mclose{background:none;border:1px solid var(--brd2);border-radius:8px;width:32px;height:32px;font-size:17px;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.mbody{overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:10px;}
+.flbl{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:4px;font-weight:600;}
+.fin{width:100%;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r);color:var(--t1);padding:10px 12px;font-size:16px;font-family:var(--font);}
+.fin:focus{outline:none;border-color:var(--t2);}
+
+/* CROP ZONE */
+.pzone-btns{display:flex;gap:10px;padding:4px 0;}
+.photo-choice-btn{flex:1;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;padding:11px 10px;background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r);font-size:14px;font-weight:500;color:var(--t1);cursor:pointer;font-family:var(--font);}
+.photo-choice-btn:active{background:var(--surf2);}
+.photo-choice-btn svg{stroke:var(--t2);flex-shrink:0;}
+.zoom-btn{background:var(--surf);border:1px solid var(--brd2);border-radius:var(--r);padding:6px 12px;font-size:13px;color:var(--t2);cursor:pointer;font-family:var(--font);font-weight:500;}
+.zoom-btn:active{background:var(--surf2);}
+.crop-canvas{display:block;width:100%;border-radius:var(--r);touch-action:none;}
+.crop-confirm{background:var(--t1);color:var(--card);border:none;border-radius:var(--r);padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);}
+.crop-retake{background:none;border:1px solid var(--brd2);border-radius:var(--r);padding:7px 12px;font-size:13px;color:var(--t2);cursor:pointer;font-family:var(--font);}
+
+/* ATTR EDIT ROWS */
+.ablock{display:flex;flex-direction:column;gap:7px;}
+.aerow{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surf);border-radius:var(--r);border:1px solid var(--brd);}
+.ae-name{font-size:15px;font-weight:500;color:var(--t1);}
+.ae-right{display:flex;align-items:center;gap:8px;}
+.ae-val-input{width:62px;background:var(--card);border:1px solid var(--brd2);border-radius:8px;color:var(--t1);padding:6px 8px;font-size:16px;font-family:var(--mono);font-weight:600;text-align:center;}
+.ae-val-input:focus{outline:none;border-color:var(--t2);}
+.ae-select{background:var(--card);border:1px solid var(--brd2);border-radius:8px;color:var(--t1);padding:6px 8px;font-size:14px;font-family:var(--font);min-width:110px;}
+.ae-select:focus{outline:none;}
+.ae-hint{font-size:11px;color:var(--t3);font-family:var(--mono);}
+
+.svbtn{background:var(--t1);color:var(--card);border:none;border-radius:var(--rl);padding:14px;font-size:16px;font-weight:600;cursor:pointer;width:100%;font-family:var(--font);}
+.svbtn:active{opacity:.8;}
+
+/* inline edit input on card */
+.inline-edit{width:52px;background:var(--surf);border:1px solid var(--t2);border-radius:6px;color:var(--t1);font-size:20px;font-family:var(--mono);font-weight:600;text-align:center;padding:2px 4px;}
+.inline-edit:focus{outline:none;}
+.inline-edit::placeholder{color:var(--t3);font-weight:400;}
+.ae-val-input::placeholder{color:var(--t3);font-weight:400;}
+
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;height:100%;color:var(--t3);}
+.empty svg{opacity:.12;}
+.empty p{font-size:15px;}
+.ebtn-p{background:var(--t1);color:var(--card);border:none;border-radius:var(--r);padding:10px 22px;font-size:15px;cursor:pointer;font-weight:600;}
+
+/* ── POKER TABLE ── */
+#vp{display:none;flex-direction:column;flex:1;overflow-y:auto;padding:10px;gap:10px;align-items:center;min-height:0;}
+.pt-popup{display:none;position:absolute;background:var(--card);border:1px solid var(--brd2);border-radius:var(--rl);padding:11px 13px;z-index:10;min-width:155px;}
+.pt-popup.on{display:block;}
+.pt-pop-name{font-size:14px;font-weight:500;color:var(--t1);margin-bottom:7px;padding-right:22px;}
+.pt-pop-btn{display:block;width:100%;text-align:left;padding:7px 8px;font-size:13px;border-radius:8px;border:none;background:none;cursor:pointer;font-family:var(--font);color:var(--t1);}
+.pt-pop-btn:active{background:var(--surf);}
+.pt-pop-btn.del{color:var(--red);}
+.pt-pop-x{position:absolute;top:8px;right:10px;background:none;border:none;font-size:16px;color:var(--t3);cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-btns">
+    <button class="btn" onclick="xCSV()">Export CSV</button>
+  </div>
+  <div class="hdr-btns">
+    <button class="btn" id="read-btn" onclick="toggleRead()">&#9654; Read</button>
+    <button class="btn pri" onclick="openAdd()">+ New</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab on" onclick="sw('s',this)">Card</button>
+  <button class="tab" onclick="sw('g',this)">Grid</button>
+  <button class="tab" onclick="sw('t',this)">Table</button>
+  <button class="tab" onclick="sw('p',this)">Game</button>
+</div>
+
+<div class="main" id="main">
+  <div id="vs">
+    <div class="car-wrap" id="carwrap">
+      <div class="c-track" id="ct"></div>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <div id="vg"></div>
+  <div id="vt"></div>
+  <div id="vp"></div>
+
+  <div id="mwrap">
+    <div class="modal">
+      <div class="mhdr">
+        <h2 id="mtitle">New villain</h2>
+        <button class="mclose" onclick="closeM()">&#10005;</button>
+      </div>
+      <div class="mbody" id="mbody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADEFS = [
+  {name:"Player type",   type:"dropdown", val:"Rec",      opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
+  {name:"Subtype",       type:"dropdown", val:"Loose",    opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
+  {name:"Pre Range",       type:"slider", val:null},
+  {name:"Post Aggro",      type:"slider", val:null},
+  {name:"Pre Aggro",       type:"slider", val:null},
+  {name:"Post Bluff",      type:"slider", val:null},
+  {name:"Pre 3-Bet",       type:"slider", val:null},
+  {name:"Overvalue Hand?", type:"slider", val:null},
+  {name:"Pre Bluff",       type:"slider", val:null},
+  {name:"Bet Thin?",       type:"slider", val:null},
+  {name:"Pre Fold Freq",   type:"slider", val:null},
+  {name:"Post Fold Freq",  type:"slider", val:null},
+];
+
+// Form input order: all Pre attrs first, then Post
+const FORM_ORDER = [
+  {name:"Player type",   type:"dropdown"},
+  {name:"Subtype",       type:"dropdown"},
+  {name:"Pre Range",     type:"slider"},
+  {name:"Pre Aggro",     type:"slider"},
+  {name:"Pre 3-Bet",     type:"slider"},
+  {name:"Pre Bluff",     type:"slider"},
+  {name:"Pre Fold Freq", type:"slider"},
+  {name:"Post Aggro",    type:"slider"},
+  {name:"Post Bluff",    type:"slider"},
+  {name:"Overvalue Hand?",type:"slider"},
+  {name:"Bet Thin?",     type:"slider"},
+  {name:"Post Fold Freq",type:"slider"},
+];
+
+const SEED = [
+  {id:"v1",name:"Voldemort",added:"Apr 1, 2025",photo:"",notes:[
+    {text:"Went all-in pre with AK, zero hesitation. No tells on strong hands — face completely still.",date:"Apr 1, 2025  9:14 PM"},
+    {text:"Tilted hard after losing a flip. Massively over-bet next three hands. Exploit post-bad-beat.",date:"Apr 1, 2025  11:02 PM"}
+  ],attrs:[
+    {name:"Player type",type:"dropdown",val:"Loose",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
+    {name:"Subtype",type:"dropdown",val:"Aggro",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
+    {name:"Pre Range",type:"slider",val:8},{name:"Pre Aggro",type:"slider",val:9},
+    {name:"Pre 3-Bet",type:"slider",val:8},{name:"Pre Bluff",type:"slider",val:7},
+    {name:"Pre Fold Freq",type:"slider",val:2},
+    {name:"Post Aggro",type:"slider",val:9},{name:"Post Bluff",type:"slider",val:8},{name:"Overvalue Hand?",type:"slider",val:2},
+    {name:"Bet Thin?",type:"slider",val:3},{name:"Post Fold Freq",type:"slider",val:2},
+  ]},
+  {id:"v2",name:"Bellatrix Lestrange",added:"Apr 2, 2025",photo:"",notes:[
+    {text:"Bet sizing totally random — 2x to 8x in same session. Cannot range assign from bet size.",date:"Apr 2, 2025  8:30 PM"}
+  ],attrs:[
+    {name:"Player type",type:"dropdown",val:"Maniac",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
+    {name:"Subtype",type:"dropdown",val:"Aggro",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
+    {name:"Pre Range",type:"slider",val:9},{name:"Pre Aggro",type:"slider",val:9},
+    {name:"Pre 3-Bet",type:"slider",val:9},{name:"Pre Bluff",type:"slider",val:9},
+    {name:"Pre Fold Freq",type:"slider",val:1},
+    {name:"Post Aggro",type:"slider",val:9},{name:"Post Bluff",type:"slider",val:9},{name:"Overvalue Hand?",type:"slider",val:8},
+    {name:"Bet Thin?",type:"slider",val:7},{name:"Post Fold Freq",type:"slider",val:1},
+  ]},
+  {id:"v3",name:"Draco Malfoy",added:"Apr 3, 2025",photo:"",notes:[
+    {text:"Folds river when board pairs — easy bluff target on scary boards.",date:"Apr 3, 2025  7:55 PM"},
+    {text:"Physical tell confirmed: breathing changes when behind. Hands go still when strong.",date:"Apr 3, 2025  10:10 PM"}
+  ],attrs:[
+    {name:"Player type",type:"dropdown",val:"Loose",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
+    {name:"Subtype",type:"dropdown",val:"Loose",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
+    {name:"Pre Range",type:"slider",val:6},{name:"Pre Aggro",type:"slider",val:5},
+    {name:"Pre 3-Bet",type:"slider",val:4},{name:"Pre Bluff",type:"slider",val:4},
+    {name:"Pre Fold Freq",type:"slider",val:4},
+    {name:"Post Aggro",type:"slider",val:5},{name:"Post Bluff",type:"slider",val:4},{name:"Overvalue Hand?",type:"slider",val:7},
+    {name:"Bet Thin?",type:"slider",val:4},{name:"Post Fold Freq",type:"slider",val:5},
+  ]},
+  {id:"v4",name:"Dolores Umbridge",added:"Apr 4, 2025",photo:"",notes:[
+    {text:"Only raises nutted hands. If she 3-bets, fold everything without exception.",date:"Apr 4, 2025  6:40 PM"}
+  ],attrs:[
+    {name:"Player type",type:"dropdown",val:"Nit",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
+    {name:"Subtype",type:"dropdown",val:"Passive",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
+    {name:"Pre Range",type:"slider",val:2},{name:"Pre Aggro",type:"slider",val:2},
+    {name:"Pre 3-Bet",type:"slider",val:1},{name:"Pre Bluff",type:"slider",val:1},
+    {name:"Pre Fold Freq",type:"slider",val:7},
+    {name:"Post Aggro",type:"slider",val:2},{name:"Post Bluff",type:"slider",val:1},{name:"Overvalue Hand?",type:"slider",val:6},
+    {name:"Bet Thin?",type:"slider",val:1},{name:"Post Fold Freq",type:"slider",val:3},
+  ]},
+  {id:"v5",name:"Peter Pettigrew",added:"Apr 5, 2025",photo:"",notes:[
+    {text:"Folds pre-flop constantly. When he plays, he has it. Avoid entirely.",date:"Apr 5, 2025  9:00 PM"}
+  ],attrs:[
+    {name:"Player type",type:"dropdown",val:"Nit",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
+    {name:"Subtype",type:"dropdown",val:"Passive",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
+    {name:"Pre Range",type:"slider",val:1},{name:"Pre Aggro",type:"slider",val:1},
+    {name:"Pre 3-Bet",type:"slider",val:1},{name:"Pre Bluff",type:"slider",val:1},
+    {name:"Pre Fold Freq",type:"slider",val:9},
+    {name:"Post Aggro",type:"slider",val:1},{name:"Post Bluff",type:"slider",val:1},{name:"Overvalue Hand?",type:"slider",val:4},
+    {name:"Bet Thin?",type:"slider",val:1},{name:"Post Fold Freq",type:"slider",val:5},
+  ]},
+  {id:"v6",name:"Lucius Malfoy",added:"Apr 6, 2025",photo:"",notes:[
+    {text:"Polarized bet sizing: small with bluffs, pot-size with value. Respect his big bets.",date:"Apr 6, 2025  8:15 PM"}
+  ],attrs:[
+    {name:"Player type",type:"dropdown",val:"Reg",opts:["Nitty-Fish","Aggro-Fish","Nit","Rec","Reg","Maniac","Loose","Pro","OMC","Whale","Station"]},
+    {name:"Subtype",type:"dropdown",val:"Tight",opts:["Loose","Tight","Passive","Aggro","Station","Tricky","Gambol"]},
+    {name:"Pre Range",type:"slider",val:5},{name:"Pre Aggro",type:"slider",val:4},
+    {name:"Pre 3-Bet",type:"slider",val:4},{name:"Pre Bluff",type:"slider",val:3},
+    {name:"Pre Fold Freq",type:"slider",val:5},
+    {name:"Post Aggro",type:"slider",val:6},{name:"Post Bluff",type:"slider",val:3},{name:"Overvalue Hand?",type:"slider",val:3},
+    {name:"Bet Thin?",type:"slider",val:2},{name:"Post Fold Freq",type:"slider",val:4},
+  ]},
+];
+
+const stored = localStorage.getItem('vc7');
+let VV = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(SEED));
+let cidx = 0, backs = {}, ulocked = {}, editId = null;
+
+function save(){ localStorage.setItem('vc7', JSON.stringify(VV)); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2); }
+function fv(v){ return String(Math.round(parseFloat(v)||0)); }
+function vc(v){ const p=parseFloat(v); if(p>=7)return'p'; if(p<=3)return'n'; return'z'; }
+function tsNow(){ return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+
+let sortOrder = 'newest'; // 'newest' | 'oldest' | 'name'
+
+function sorted(arr){
+  const a = [...arr];
+  if(sortOrder==='name') return a.sort((x,y)=>(x.name||'').localeCompare(y.name||''));
+  if(sortOrder==='oldest') return a; // insertion order = oldest first
+  return a.slice().reverse(); // newest first (default)
+}
+
+function ra(){ renderS(); renderG(); renderT(); }
+
+/* ── CARD HTML ── */
+function bCard(v, i){
+  const ul = ulocked[v.id];
+  const photoH = v.photo
+    ? `<img src="${v.photo}" alt="">`
+    : `<div class="vc-ph"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>No photo</span></div>`;
+  const pt = v.attrs.find(a=>a.name==='Player type');
+  const st = v.attrs.find(a=>a.name==='Subtype');
+  const tbH = pt ? `<div class="tbadge tm">${pt.val}${st&&st.val?' · '+st.val:''}</div>` : '';
+  // Render attrs in ADEFS display order (Pre left / Post right interleaved)
+  const attH = ADEFS.map((def,ai)=>{
+    const a = v.attrs.find(x=>x.name===def.name)||def;
+    const savedAi = v.attrs.findIndex(x=>x.name===def.name);
+    if(a.type==='dropdown') return `<div class="ar"><div class="al">${a.name}</div><div class="av drop">${a.val||'—'}</div></div>`;
+    const isPre = a.name.startsWith('Pre');
+    const isNull = a.val===null||a.val===undefined||a.val==='';
+    const cl = isNull ? 'z' : vc(a.val);
+    const dispVal = isNull ? '–' : fv(a.val);
+    const valEl = ul
+      ? `<input class="inline-edit" type="number" min="1" max="9" value="${isNull?'':fv(a.val)}" inputmode="numeric" placeholder="–" onchange="inlineChg('${v.id}',${savedAi},this)" onfocus="this.select()">`
+      : `<div class="av ${cl}">${dispVal}</div>`;
+    return `<div class="ar${isPre?' pre':''}">${'<div class="al">'+a.name+'</div>'}${valEl}</div>`;
+  }).join('');
+  const noteH = (v.notes||[]).length
+    ? v.notes.map(n=>`<div class="note"><div class="nd">${n.date}</div><div class="nt">${n.text}</div></div>`).join('')
+    : `<div style="color:var(--t3);font-size:14px;padding:8px 0;">No notes yet.</div>`;
+  return `<div class="vc" id="vc-${v.id}">
+    <div class="vc-photo">${photoH}${tbH}<div class="seq">${String(i+1).padStart(3,'0')}</div>${(v.notes||[]).length>0?`<div class="note-badge">${(v.notes||[]).length}</div>`:''}</div>
+    <div class="vc-namebar" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <div style="min-width:0;">
+        <h2 style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.name||'Unknown'}</h2>
+        <div class="meta">added ${v.added}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        ${ul?`<button class="ea" onclick="openEdit('${v.id}')">Edit</button><button class="ea del" onclick="confirmDel('${v.id}')">Delete</button>`:''}
+        <div class="lock-inline ${ul?'open':''}" id="lk-${v.id}" onclick="toggleLock('${v.id}')">
+          ${ul
+            ? `<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>`
+            : `<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+          }
+        </div>
+      </div>
+    </div>
+    <div class="attrs">${attH}</div>
+    <div class="vc-hint">&#8593; swipe up for notes</div>
+    <div class="vc-back ${backs[v.id]?'open':''}" id="bk-${v.id}">
+      <div class="bk-hdr">
+        <div><h3>Session notes</h3><div class="bk-sub">${v.name||'Unknown'}</div></div>
+        <button class="bk-close" onclick="clBk('${v.id}')">&#8595; close</button>
+      </div>
+      <div class="nlist" id="nl-${v.id}">${noteH}</div>
+      <div class="nadd">
+        <textarea id="ni-${v.id}" placeholder="Add a note..."></textarea>
+        <button onclick="addN('${v.id}')">Save</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleLock(id){
+  ulocked[id] = !ulocked[id];
+  if(ulocked[id]){ document.querySelector('.hdr').style.display='none'; }
+  else { document.querySelector('.hdr').style.display=''; }
+  renderS();
+}
+
+function confirmDel(id){
+  const v=VV.find(x=>x.id===id);
+  const name=v?v.name:'this villain';
+  const nc=(v?.notes||[]).length;
+  const msg=nc>0
+    ? 'Delete ' + name + '?\nThis record has ' + nc + ' note' + (nc===1?'':'s') + '.\nThis cannot be undone.'
+    : 'Delete ' + name + '?\nThis cannot be undone.';
+  if(!confirm(msg)) return;
+  VV=VV.filter(x=>x.id!==id);
+  delete ulocked[id]; delete backs[id];
+  // remove from table if seated
+  ptSeats=ptSeats.map(s=>s===id?null:s);
+  savePT();
+  if(cidx>=VV.length) cidx=Math.max(0,VV.length-1);
+  save(); ra();
+}
+
+function inlineChg(vid, ai, el){
+  const raw = el.value.trim();
+  const villain = VV.find(x=>x.id===vid);
+  if(!villain) return;
+  if(raw===''){
+    villain.attrs[ai].val = null;
+  } else {
+    let v = parseFloat(raw);
+    if(isNaN(v)) v=null;
+    else v = Math.max(1, Math.min(9, Math.round(v)));
+    el.value = v===null?'':v;
+    villain.attrs[ai].val = v;
+  }
+  save();
+}
+
+/* ── SINGLE VIEW ── */
+function renderS(){
+  const ct=document.getElementById('ct'), ds=document.getElementById('dots'), sv=document.getElementById('vs');
+  const ex=sv.querySelector('.empty'); if(ex) ex.remove();
+  if(!VV.length){
+    ct.innerHTML=''; ds.innerHTML='';
+    sv.insertAdjacentHTML('afterbegin','<div class="empty" style="flex:1;"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><p>No villains yet</p><button class="ebtn-p" onclick="openAdd()">Add first villain</button></div>');
+    return;
+  }
+  ct.innerHTML = VV.map((v,i)=>`<div class="c-slot">${bCard(v,i)}</div>`).join('');
+  ct.style.width = (VV.length*100)+'%';
+  ct.querySelectorAll('.c-slot').forEach(s=>{ s.style.width=(100/VV.length)+'%'; });
+  ds.innerHTML = VV.map((_,i)=>`<div class="dot ${i===cidx?'on':''}"></div>`).join('');
+  gTo(cidx, false);
+  swipeSetup();
+}
+
+function gTo(i, a){
+  if(i<0)i=0; if(i>=VV.length)i=VV.length-1; cidx=i;
+  const ct=document.getElementById('ct');
+  ct.style.transition = a?'transform .26s cubic-bezier(.4,0,.2,1)':'none';
+  ct.style.transform = `translateX(-${cidx*(100/VV.length)}%)`;
+  document.querySelectorAll('.dot').forEach((d,j)=>{d.className='dot'+(j===cidx?' on':'');});
+}
+
+function clBk(id){ backs[id]=false; document.getElementById('bk-'+id)?.classList.remove('open'); }
+
+function addN(id){
+  const el=document.getElementById('ni-'+id); if(!el) return;
+  const t=el.value.trim(); if(!t) return;
+  const v=VV.find(x=>x.id===id); if(!v) return;
+  if(!v.notes) v.notes=[];
+  v.notes.unshift({text:t, date:tsNow()});
+  save(); el.value='';
+  const nl=document.getElementById('nl-'+id);
+  if(nl) nl.innerHTML=v.notes.map(n=>`<div class="note"><div class="nd">${n.date}</div><div class="nt">${n.text}</div></div>`).join('');
+}
+
+/* ── SWIPE ── */
+function swipeSetup(){
+  const cw=document.getElementById('carwrap');
+  let sx,sy,dx,dy,mv=false;
+  cw.ontouchstart=e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; dx=dy=0; mv=false; };
+  cw.ontouchmove=e=>{
+    dx=e.touches[0].clientX-sx; dy=e.touches[0].clientY-sy;
+    if(!mv && Math.abs(dy)>Math.abs(dx)+12){
+      const id=VV[cidx]?.id; if(!id) return;
+      if(dy<-40){ backs[id]=true; document.getElementById('bk-'+id)?.classList.add('open'); }
+      else if(dy>40){ backs[id]=false; document.getElementById('bk-'+id)?.classList.remove('open'); }
+      return;
+    }
+    if(Math.abs(dx)>12){ mv=true; e.preventDefault(); }
+    if(mv){
+      const pct = (-cidx*(100/VV.length)) + (dx/cw.offsetWidth*(100/VV.length));
+      document.getElementById('ct').style.transform=`translateX(${pct}%)`;
+    }
+  };
+  cw.ontouchend=()=>{ if(mv){ if(dx<-55&&cidx<VV.length-1)cidx++; else if(dx>55&&cidx>0)cidx--; gTo(cidx,true); } mv=false; };
+}
+
+/* ── GRID ── */
+function renderG(){
+  const g=document.getElementById('vg');
+  if(!VV.length){ g.innerHTML='<div class="sort-bar"></div><div class="empty" style="grid-column:1/-1;height:260px;"><p>No villains</p></div>'; return; }
+  const sv=sorted(VV);
+  g.innerHTML='<div class="sort-bar" style="grid-column:1/-1;">'+sortBarHTML()+'</div>';
+  g.innerHTML+=sv.map((v)=>{
+    const i=VV.indexOf(v);
+    const ph=v.photo?`<img src="${v.photo}" alt="">`:`<div class="mc-phe"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>`;
+    const tags=v.attrs.filter(a=>a.type==='slider').slice(0,4).map(a=>`<span class="tg ${vc(a.val)}">${a.name.slice(0,4)} ${fv(a.val)}</span>`).join('');
+    const alreadySeated = ptSeats.includes(v.id);
+    const assignMode = ptPending==='__selecting__';
+    const selectable = assignMode && !alreadySeated;
+    return `<div class="mc" id="mc-${v.id}" onclick="jmp(${i})"
+      style="${selectable?'border-color:var(--grn);':''}${alreadySeated?'opacity:0.45;':''}">
+      <div class="mc-ph">${ph}<div class="mc-name">${v.name||'Unknown'}</div></div>
+      <div class="mc-body"><div class="mc-tags">${tags}${alreadySeated?'<span class="tg z">at table</span>':''}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function jumpToCard(id){
+  const i=VV.findIndex(v=>v.id===id);
+  if(i>=0){ cidx=i; sw('s', document.querySelector('.tab')); }
+}
+
+function jmp(i){
+  if(ptPending==='__selecting__' && ptPendingSeat!==null){
+    const vid=VV[i]?.id;
+    if(vid && !ptSeats.includes(vid)){
+      ptSeats[ptPendingSeat]=vid;
+      savePT();
+    }
+    ptPending=null; ptPendingSeat=null;
+    const b=document.getElementById('pt-grid-banner'); if(b) b.remove();
+    sw('p', document.querySelectorAll('.tab')[3]);
+    return;
+  }
+  cidx=i; sw('s', document.querySelector('.tab'));
+}
+
+/* ── TABLE ── */
+function renderT(){
+  const t=document.getElementById('vt');
+  const cols=['','Name','Added',...ADEFS.map(a=>a.name.slice(0,6)),'Notes'];
+  const thead=`<thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>`;
+  if(!VV.length){ t.innerHTML=sortBarHTML()+'<p style="color:var(--t3);font-size:13px;text-align:center;padding:16px;">No villains yet.</p>'; return; }
+  const sv=sorted(VV);
+  const rows=sv.map(v=>{
+    const ph=v.photo?`<img class="tth" src="${v.photo}" alt="">`:`<div class="tphe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>`;
+    const cells=ADEFS.map(def=>{ const a=v.attrs.find(x=>x.name===def.name)||def; return a.type==='dropdown'?`<td style="color:var(--t2)">${a.val}</td>`:`<td class="${vc(a.val)}" style="font-family:var(--mono);font-weight:600;">${fv(a.val)}</td>`; }).join('');
+    return `<tr onclick="jumpToCard('${v.id}')" style="cursor:pointer;"><td>${ph}</td><td style="font-weight:500;">${v.name||'—'}</td><td style="color:var(--t3);font-size:12px;">${v.added}</td>${cells}<td style="color:var(--t3);">${(v.notes||[]).length}</td></tr>`;
+  }).join('');
+  t.innerHTML=sortBarHTML()+`<div style="overflow-x:auto;"><table class="dt">${thead}<tbody>${rows}</tbody></table></div>`;
+}
+
+function xCSV(){
+  const h=['Name','Added',...ADEFS.map(a=>a.name),'Note count'].map(x=>`"${x}"`).join(',');
+  const rows=VV.map(v=>{
+    const vals=ADEFS.map(def=>{ const a=v.attrs.find(x=>x.name===def.name)||def; return `"${a.val}"`; });
+    return [`"${v.name||''}"`,`"${v.added}"`, ...vals, `"${(v.notes||[]).length}"`].join(',');
+  });
+  const blob=new Blob([[h,...rows].join('\n')],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='villain_cards_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+}
+
+/* ── VIEW SWITCH ── */
+function sw(v, btn){
+  // If leaving grid while in assign mode, cancel cleanly
+  if(v!=='g' && ptPending==='__selecting__'){ ptCancelGridAssign(); }
+  document.getElementById('vs').style.display = v==='s'?'flex':'none';
+  document.getElementById('vg').style.display = v==='g'?'grid':'none';
+  document.getElementById('vt').style.display = v==='t'?'block':'none';
+  document.getElementById('vp').style.display = v==='p'?'flex':'none';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  else document.querySelector('.tab').classList.add('on');
+  if(v==='s') renderS();
+  if(v==='p') renderPoker();
+}
+
+/* ── READ ALOUD ── */
+let isReading = false;
+
+function toggleRead(){
+  if(isReading){ stopRead(); return; }
+  if(!VV.length) return;
+  startRead();
+}
+
+function startRead(){
+  if(!VV.length) return;
+  isReading = true;
+  const btn = document.getElementById('read-btn');
+  if(btn){ btn.textContent='⏹ Stop'; btn.style.borderColor='var(--red)'; btn.style.color='var(--red)'; }
+  const v=VV[cidx];
+  const script = buildReadScript(v);
+  const u = new SpeechSynthesisUtterance(script);
+  u.rate=0.88; u.pitch=1;
+  u.onend=()=>{ isReading=false; resetReadBtn(); };
+  u.onerror=()=>{ isReading=false; resetReadBtn(); };
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+
+function stopRead(){
+  speechSynthesis.cancel();
+  isReading=false;
+  resetReadBtn();
+}
+
+function resetReadBtn(){
+  const btn=document.getElementById('read-btn');
+  if(btn){ btn.innerHTML='&#9654; Read'; btn.style.borderColor=''; btn.style.color=''; }
+}
+
+function buildReadScript(v){
+  const getAttr = (name) => {
+    const a = v.attrs.find(x=>x.name===name);
+    return (a&&a.val!==null&&a.val!==undefined&&a.val!=='') ? parseInt(a.val) : null;
+  };
+  const pt = v.attrs.find(a=>a.name==='Player type');
+  const st = v.attrs.find(a=>a.name==='Subtype');
+  const type = pt ? pt.val : '';
+  const subtype = st ? st.val : '';
+
+  const parts = [];
+
+  // ── PROLOGUE ──
+  const prologues = {
+    'OMC':        `You have ${v.name} tagged as OMC${subtype?' with a subtype of '+subtype:''}. When they bet, they have it. The only question is how strong.`,
+    'Nit':        `You have ${v.name} tagged as Nit${subtype?' with a subtype of '+subtype:''}. Tight and straightforward. Their bets are value-heavy.`,
+    'Station':    `You have ${v.name} tagged as Calling Station${subtype?' with a subtype of '+subtype:''}. Never bluff. Extract value on every street.`,
+    'Maniac':     `You have ${v.name} tagged as Maniac${subtype?' with a subtype of '+subtype:''}. Look for spots.`,
+    'Aggro-Fish': `You have ${v.name} tagged as Aggro-Fish${subtype?' with a subtype of '+subtype:''}. Pick your spot carefully and look for betting patterns. He can't always have it.`,
+    'Nitty-Fish': `You have ${v.name} tagged as Nitty-Fish${subtype?' with a subtype of '+subtype:''}. They wait for a hand then call it down too far. Value bet.`,
+    'Whale':      `You have ${v.name} tagged as Whale${subtype?' with a subtype of '+subtype:''}. Value relentlessly. They pay off and they don't fold.`,
+    'Loose':      `You have ${v.name} tagged as Loose${subtype?' with a subtype of '+subtype:''}. They are in a lot of pots. Focus on what they do once they get there.`,
+    'Rec':        `You have ${v.name} tagged as Rec${subtype?' with a subtype of '+subtype:''}. No predictable pattern. Let the numbers speak.`,
+    'Reg':        `You have ${v.name} tagged as Reg${subtype?' with a subtype of '+subtype:''}. Solid fundamentals. Only the outliers matter.`,
+    'Pro':        `You have ${v.name} tagged as Pro${subtype?' with a subtype of '+subtype:''}. Solid fundamentals. Only the outliers matter.`,
+  };
+  parts.push(prologues[type] || `You have ${v.name} tagged as ${type}${subtype?' with a subtype of '+subtype:''}.`);
+
+  // ── PHRASE LIBRARIES ──
+  const phrases = {
+    'Pre Range': {
+      1:'Super tight. They need a premium to enter.',
+      2:'Very tight. Limited range.',
+      3:'Tight. Below average range.',
+      4:'Average range.', 5:'Average range.', 6:'Average range.',
+      7:'Wide range. They play a lot of hands.',
+      8:'Very wide range.',
+      9:'Super wide. Almost anything.'
+    },
+    'Pre Aggro': {
+      1:'Completely passive pre. No threat.',
+      2:'Very passive pre.',
+      3:'Mostly passive pre.',
+      4:'Average pre-flop aggression.', 5:'Average pre-flop aggression.', 6:'Average pre-flop aggression.',
+      7:'Aggressive pre. Apply caution.',
+      8:'Very aggressive pre.',
+      9:'Dangerously aggressive pre. Give them room.'
+    },
+    'Pre 3-Bet': {
+      1:'Never 3-bets. Fold to it.',
+      2:'Almost never 3-bets.',
+      3:'Rarely 3-bets.',
+      4:'Average 3-bet frequency.', 5:'Average 3-bet frequency.', 6:'Average 3-bet frequency.',
+      7:'3-bets regularly. Be ready.',
+      8:'3-bets often.',
+      9:'3-bets constantly. Call lighter.'
+    },
+    'Pre Bluff': {
+      1:'Never bluffs pre. If they raise, they have it.',
+      2:'Rarely bluffs pre. Their raises are strong.',
+      3:'Below average pre-flop bluff frequency.',
+      4:'Average pre-flop bluff frequency.', 5:'Average pre-flop bluff frequency.', 6:'Average pre-flop bluff frequency.',
+      7:'Bluffs pre regularly. Widen your calling range.',
+      8:'Bluffs pre often. Their raises are frequently air.',
+      9:'Bluffs pre constantly. Call them light.'
+    },
+    'Pre Fold Freq': {
+      1:'Never folds pre. Don\'t bother bluffing.',
+      2:'Rarely folds pre.',
+      3:'Folds less than average pre.',
+      4:'Average pre-flop fold frequency.', 5:'Average pre-flop fold frequency.', 6:'Average pre-flop fold frequency.',
+      7:'Folds pre more than average. Apply pressure.',
+      8:'Folds pre frequently. Steal often.',
+      9:'Folds pre constantly. Steal liberally.'
+    },
+    'Post Aggro': {
+      1:'Completely passive post. No threat.',
+      2:'Very passive post.',
+      3:'Mostly passive post.',
+      4:'Average post-flop aggression.', 5:'Average post-flop aggression.', 6:'Average post-flop aggression.',
+      7:'Aggressive post. Proceed carefully.',
+      8:'Very aggressive post.',
+      9:'Relentlessly aggressive post. Tighten your calling range.'
+    },
+    'Post Bluff': {
+      1:'Never bluffs post. If they bet, they have it.',
+      2:'Rarely bluffs post. Respect their bets.',
+      3:'Below average post-flop bluff frequency.',
+      4:'Average post-flop bluff frequency.', 5:'Average post-flop bluff frequency.', 6:'Average post-flop bluff frequency.',
+      7:'Bluffs post regularly. Look them up.',
+      8:'Bluffs post often. Their bets are frequently air.',
+      9:'Bluffs post constantly. Call them down light.'
+    },
+    'Overvalue Hand?': {
+      1:'Never overvalues. Respect their action.',
+      2:'Rarely overvalues.',
+      3:'Occasionally overvalues.',
+      4:'Average tendency to overvalue.', 5:'Average tendency to overvalue.', 6:'Average tendency to overvalue.',
+      7:'Overvalues frequently. Call down lighter.',
+      8:'Overvalues often. Call them down.',
+      9:'Almost always overvalues. Call them down.'
+    },
+    'Bet Thin?': {
+      1:'Will not bet a scary river.',
+      2:'Rarely bets a scary river.',
+      3:'Below average thin value.',
+      4:'Average thin value betting.', 5:'Average thin value betting.', 6:'Average thin value betting.',
+      7:'Bets thin. River bets are not always strong.',
+      8:'Bets thin well. Widen your calling range.',
+      9:'Bets any profitable river. Widen your calling range significantly.'
+    },
+    'Post Fold Freq': {
+      1:'Never folds post. Don\'t bluff.',
+      2:'Rarely folds post.',
+      3:'Folds less than average post.',
+      4:'Average post-flop fold frequency.', 5:'Average post-flop fold frequency.', 6:'Average post-flop fold frequency.',
+      7:'Folds post more than average. Bluff selectively.',
+      8:'Folds post frequently. Bluff often.',
+      9:'Folds post constantly. Fire away.'
+    }
+  };
+
+  // ── TYPE RULES ──
+  // Format: { attrName: 'always' | 'skip' | threshold_number }
+  // threshold: positive = read if >= threshold, negative = read if <= abs(threshold)
+  const rules = {
+    'OMC': {
+      'Pre Range':      'always',
+      'Pre Aggro':      'always',
+      'Pre 3-Bet':      6,          // implied low, read if >=6
+      'Pre Bluff':      6,
+      'Pre Fold Freq':  'always',
+      'Post Aggro':     'always',
+      'Post Bluff':     6,
+      'Overvalue Hand?':'always',
+      'Bet Thin?':      6,
+      'Post Fold Freq': 'always'
+    },
+    'Nit': {
+      'Pre Range':      'always',
+      'Pre Aggro':      'always',
+      'Pre 3-Bet':      6,
+      'Pre Bluff':      6,
+      'Pre Fold Freq':  'always',
+      'Post Aggro':     'always',
+      'Post Bluff':     6,
+      'Overvalue Hand?':'always',
+      'Bet Thin?':      6,
+      'Post Fold Freq': 'always'
+    },
+    'Station': {
+      'Pre Range':      'always',
+      'Pre Aggro':      'skip',
+      'Pre 3-Bet':      7,
+      'Pre Bluff':      7,
+      'Pre Fold Freq':  7,
+      'Post Aggro':     'always',
+      'Post Bluff':     7,
+      'Overvalue Hand?':'always',
+      'Bet Thin?':      7,
+      'Post Fold Freq': 7
+    },
+    'Maniac': {
+      'Pre Range':      'compressed',  // special: report number if <6, phrases for 6-7 and 8-9
+      'Pre Aggro':      'compressed',
+      'Pre 3-Bet':      'compressed',
+      'Pre Bluff':      'compressed',
+      'Pre Fold Freq':  'always',
+      'Post Aggro':     'compressed',
+      'Post Bluff':     'compressed',
+      'Overvalue Hand?':'always',
+      'Bet Thin?':      'always',
+      'Post Fold Freq': 'always'
+    },
+    'Aggro-Fish': {
+      'Pre Range':      'compressed',
+      'Pre Aggro':      'compressed',
+      'Pre 3-Bet':      7,
+      'Pre Bluff':      'always',
+      'Pre Fold Freq':  'always',
+      'Post Aggro':     'always',
+      'Post Bluff':     'always',
+      'Overvalue Hand?':'always',
+      'Bet Thin?':      7,
+      'Post Fold Freq': 'always'
+    },
+    'Nitty-Fish': {
+      'Pre Range':      'compressed-low',  // report number if >4, phrases for 1-2 and 3-4
+      'Pre Aggro':      'compressed-low',
+      'Pre 3-Bet':      7,
+      'Pre Bluff':      7,
+      'Pre Fold Freq':  7,
+      'Post Aggro':     'always',
+      'Post Bluff':     'always',
+      'Overvalue Hand?':'always',
+      'Bet Thin?':      7,
+      'Post Fold Freq': 'always'
+    },
+    'Whale': {
+      'Pre Range':      'always',
+      'Pre Aggro':      -3,          // negative = read if <=3
+      'Pre 3-Bet':      7,
+      'Pre Bluff':      7,
+      'Pre Fold Freq':  'always',
+      'Post Aggro':     'always',
+      'Post Bluff':     7,
+      'Overvalue Hand?':'always',
+      'Bet Thin?':      'always',
+      'Post Fold Freq': 'always'
+    },
+    'default': {  // Loose, Rec, Reg, Pro — read all, skip 4-6 for Reg/Pro
+      'Pre Range':      'always',
+      'Pre Aggro':      'always',
+      'Pre 3-Bet':      'always',
+      'Pre Bluff':      'always',
+      'Pre Fold Freq':  'always',
+      'Post Aggro':     'always',
+      'Post Bluff':     'always',
+      'Overvalue Hand?':'always',
+      'Bet Thin?':      'always',
+      'Post Fold Freq': 'always'
+    }
+  };
+
+  // Reg and Pro skip 4-6
+  const skipAverage = (type==='Reg'||type==='Pro');
+  const typeRules = rules[type] || rules['default'];
+
+  const compressedHigh = {
+    'Pre Range':  {lo:'Very wide pre range.',   hi:'Super wide pre range.'},
+    'Pre Aggro':  {lo:'Aggressive pre.',         hi:'Very aggressive pre.'},
+    'Pre 3-Bet':  {lo:'3-bets frequently.',      hi:'3-bets constantly. Call lighter.'},
+    'Pre Bluff':  {lo:'Bluffs pre regularly.',   hi:'Bluffs pre constantly. Call them light.'},
+    'Post Aggro': {lo:'Aggressive post.',        hi:'Very aggressive post.'},
+    'Post Bluff': {lo:'Bluffs post regularly.',  hi:'Bluffs post constantly. Call them down light.'}
+  };
+
+  const compressedLow = {
+    'Pre Range': {lo:'Very tight pre range.', hi:'Tight pre range.'},
+    'Pre Aggro': {lo:'Very passive pre.',     hi:'Passive pre.'}
+  };
+
+  const attrOrder = ['Pre Range','Pre Aggro','Pre 3-Bet','Pre Bluff','Pre Fold Freq','Post Aggro','Post Bluff','Overvalue Hand?','Bet Thin?','Post Fold Freq'];
+
+  attrOrder.forEach(name => {
+    const val = getAttr(name);
+    if(val===null) return;
+    const rule = typeRules[name];
+    const ph = phrases[name];
+    if(!ph) return;
+
+    if(rule==='skip') return;
+
+    if(rule==='always'){
+      if(skipAverage && val>=4 && val<=6) return;
+      const p = ph[val]; if(p && !p.startsWith('Average')) parts.push(p);
+      return;
+    }
+
+    if(rule==='compressed'){
+      if(val<=5){ parts.push(`${name} is ${val}.`); return; }
+      if(val<=7){ parts.push(compressedHigh[name]?.lo||ph[val]); return; }
+      parts.push(compressedHigh[name]?.hi||ph[val]); return;
+    }
+
+    if(rule==='compressed-low'){
+      if(val>=5){ parts.push(`${name} is ${val}.`); return; }
+      if(val<=2){ parts.push(compressedLow[name]?.lo||ph[val]); return; }
+      parts.push(compressedLow[name]?.hi||ph[val]); return;
+    }
+
+    if(typeof rule==='number'){
+      if(rule>0 && val>=rule){ const p=ph[val]; if(p) parts.push(p); }
+      if(rule<0 && val<=Math.abs(rule)){ const p=ph[val]; if(p) parts.push(p); }
+      return;
+    }
+  });
+
+  // ── LATEST NOTE ──
+  if(v.notes&&v.notes.length) parts.push('Latest note. ' + v.notes[0].text);
+
+  // ── IF NO OUTLIERS ──
+  if(parts.length===1){
+    if(type==='Reg'||type==='Pro') parts.push('No significant deviations recorded yet.');
+    else if(!v.notes||!v.notes.length) parts.push('No attributes recorded yet.');
+  }
+
+  return parts.join(' ');
+}
+
+/* ── CROP SYSTEM ── */
+let cropImg = null, cropCanvas = null, cropCtx = null;
+let cropState = { scale:1, ox:0, oy:0, dragging:false, lx:0, ly:0 };
+
+function initCrop(dataUrl){
+  const container = document.getElementById('crop-container');
+  if(!container) return;
+  const img = new Image();
+  img.onload = ()=>{
+    cropImg = img;
+    cropCanvas = document.getElementById('crop-canvas');
+    cropCanvas.width = 600; cropCanvas.height = 400;
+    cropCtx = cropCanvas.getContext('2d');
+    const scale = Math.max(600/img.width, 400/img.height);
+    cropState = { scale, ox:(600-img.width*scale)/2, oy:(400-img.height*scale)/2, dragging:false, lx:0, ly:0 };
+    drawCrop();
+    cropCanvas.ontouchstart = e=>{ e.preventDefault(); cropState.dragging=true; cropState.lx=e.touches[0].clientX; cropState.ly=e.touches[0].clientY; };
+    cropCanvas.ontouchmove = e=>{ e.preventDefault(); if(!cropState.dragging) return; const dx=e.touches[0].clientX-cropState.lx, dy=e.touches[0].clientY-cropState.ly; cropState.ox+=dx; cropState.oy+=dy; cropState.lx=e.touches[0].clientX; cropState.ly=e.touches[0].clientY; drawCrop(); };
+    cropCanvas.ontouchend = ()=>{ cropState.dragging=false; };
+    cropCanvas.onmousedown = e=>{ cropState.dragging=true; cropState.lx=e.clientX; cropState.ly=e.clientY; };
+    cropCanvas.onmousemove = e=>{ if(!cropState.dragging) return; cropState.ox+=e.movementX; cropState.oy+=e.movementY; drawCrop(); };
+    cropCanvas.onmouseup = ()=>{ cropState.dragging=false; };
+  };
+  img.src = dataUrl;
+}
+
+function drawCrop(){
+  if(!cropCtx||!cropImg) return;
+  cropCtx.clearRect(0,0,600,400);
+  cropCtx.drawImage(cropImg, cropState.ox, cropState.oy, cropImg.width*cropState.scale, cropImg.height*cropState.scale);
+  cropCtx.strokeStyle='rgba(255,255,255,0.5)'; cropCtx.lineWidth=1;
+  cropCtx.strokeRect(1,1,598,398);
+}
+
+function zoomCrop(factor){
+  if(!cropState||!cropImg) return;
+  const cx=300, cy=200;
+  cropState.ox = cx - (cx - cropState.ox)*factor;
+  cropState.oy = cy - (cy - cropState.oy)*factor;
+  cropState.scale *= factor;
+  drawCrop();
+}
+
+function confirmCrop(){
+  if(!cropCanvas) return;
+  const out = document.createElement('canvas'); out.width=600; out.height=400;
+  out.getContext('2d').drawImage(cropCanvas,0,0);
+  const dataUrl = out.toDataURL('image/jpeg',0.85);
+  const cc=document.getElementById('crop-container'); if(cc) cc.style.display='none';
+  const pz=document.getElementById('pz');
+  if(pz){
+    pz.style.display='block';
+    pz.innerHTML=`<div style="position:relative;" onclick="document.getElementById('pf-rep').click()"><img id="pp" src="${dataUrl}" alt="" style="width:100%;max-height:160px;object-fit:cover;border-radius:var(--r);cursor:pointer;"><div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:3px 9px;border-radius:20px;">Tap to replace</div><input type="file" id="pf-rep" accept="image/*" style="display:none;"></div>`;
+    const el=document.getElementById('pf-rep'); if(el) el.addEventListener('change', handlePhotoUpload);
+  }
+}
+
+/* ── ADD / EDIT MODAL ── */
+function hideChrome(){ document.querySelector('.hdr').style.display='none'; document.querySelector('.tabs').style.display='none'; }
+function showChrome(){ document.querySelector('.hdr').style.display=''; document.querySelector('.tabs').style.display=''; Object.keys(ulocked).forEach(k=>ulocked[k]=false); }
+function openAdd(){ editId=null; buildM(null); document.getElementById('mwrap').classList.add('on'); hideChrome(); }
+function openEdit(id){ editId=id; buildM(VV.find(x=>x.id===id)); document.getElementById('mwrap').classList.add('on'); hideChrome(); }
+function closeM(){ document.getElementById('mwrap').classList.remove('on'); cropImg=null; cropCanvas=null; cropCtx=null; showChrome(); }
+
+function buildM(v){
+  document.getElementById('mtitle').textContent = v ? 'Edit villain' : 'New villain';
+  const nm=v?v.name:'', ph=v?v.photo:'';
+  // Use form order (Pre first, Post second) for new card form
+  const attrs = FORM_ORDER.map(def=>{ const saved = v ? v.attrs.find(a=>a.name===def.name) : null; const base = ADEFS.find(a=>a.name===def.name)||def; return saved ? saved : {...base}; });
+  document.getElementById('mbody').innerHTML=`
+    <div>
+      <div class="flbl">Photo</div>
+      ${ph
+        ? `<div id="pz" style="position:relative;cursor:pointer;" onclick="document.getElementById('pf-lib').click()">
+             <img id="pp" src="${ph}" alt="" style="width:100%;max-height:160px;object-fit:cover;border-radius:var(--r);">
+             <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:3px 9px;border-radius:20px;">Tap to replace</div>
+             <input type="file" id="pf-lib" accept="image/*" style="display:none;">
+           </div>`
+        : `<div id="pz" class="pzone-btns">
+             <button type="button" class="photo-choice-btn" onclick="document.getElementById('pf-cam').click()">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><circle cx="12" cy="14" r="3.5"/><path d="M9 7l1.5-3h3L15 7"/></svg>
+               Camera
+             </button>
+             <button type="button" class="photo-choice-btn" onclick="document.getElementById('pf-lib').click()">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+               Library
+             </button>
+             <input type="file" id="pf-cam" accept="image/*" capture="environment" style="display:none;">
+             <input type="file" id="pf-lib" accept="image/*" style="display:none;">
+           </div>`
+      }
+      <div id="crop-container" style="display:none;margin-top:10px;">
+        <div style="font-size:12px;color:var(--t3);margin-bottom:6px;">Drag to reposition · pinch or buttons to zoom</div>
+        <canvas id="crop-canvas" class="crop-canvas" style="touch-action:none;"></canvas>
+        <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
+          <button type="button" class="zoom-btn" onclick="zoomCrop(0.9)">&#8722; zoom</button>
+          <button type="button" class="zoom-btn" onclick="zoomCrop(1.1)">&#43; zoom</button>
+          <div style="flex:1;"></div>
+          <button type="button" class="crop-retake" onclick="retakePhoto()">Retake</button>
+          <button type="button" class="crop-confirm" onclick="confirmCrop()">Use photo</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="flbl" style="margin-bottom:0;white-space:nowrap;">Name</div>
+        <input class="fin" id="vn" value="${nm}" placeholder="e.g. Seat 5, Hoodie Guy" style="flex:1;margin:0;">
+      </div>
+    </div>
+    <div>
+      <div class="flbl" style="margin-bottom:4px;">Attributes &nbsp;<span style="font-size:11px;color:var(--t3);font-weight:400;">scale 1 (low) – 9 (high)</span></div>
+      <div class="ablock">${attrs.map((a,i)=>bAE(a,i)).join('')}</div>
+    </div>
+    <button class="svbtn" onclick="saveV()">Save villain</button>
+    <div style="height:24px;"></div>
+  `;
+  ['pf-cam','pf-lib'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('change', handlePhotoUpload); });
+}
+
+function handlePhotoUpload(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    const pz=document.getElementById('pz'); if(pz) pz.style.display='none';
+    const cc = document.getElementById('crop-container'); if(cc) cc.style.display='block';
+    initCrop(ev.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+function retakePhoto(){
+  const pz=document.getElementById('pz');
+  if(pz){ pz.style.display='flex'; pz.innerHTML=`<button type="button" class="photo-choice-btn" onclick="document.getElementById('pf-cam2').click()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><circle cx="12" cy="14" r="3.5"/><path d="M9 7l1.5-3h3L15 7"/></svg>Camera</button><button type="button" class="photo-choice-btn" onclick="document.getElementById('pf-lib2').click()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Library</button><input type="file" id="pf-cam2" accept="image/*" capture="environment" style="display:none;"><input type="file" id="pf-lib2" accept="image/*" style="display:none;">`; ['pf-cam2','pf-lib2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('change', handlePhotoUpload); }); }
+  const cc=document.getElementById('crop-container'); if(cc) cc.style.display='none';
+  cropImg=null; cropCanvas=null; cropCtx=null;
+}
+
+function bAE(a,i){
+  if(a.type==='dropdown'){
+    const opts=(a.opts||[]).map(o=>`<option ${a.val===o?'selected':''}>${o}</option>`).join('');
+    return `<div class="aerow"><div class="ae-name">${a.name}</div><div class="ae-right"><select class="ae-select" data-i="${i}">${opts}</select></div></div>`;
+  }
+  const isPre = a.name.startsWith('Pre');
+  const isEmpty = a.val===null||a.val===undefined||a.val==='';
+  const vStr = isEmpty ? '' : String(Math.round(parseFloat(a.val)));
+  return `<div class="aerow${isPre?' pre-row':''}" style="${isPre?'background:var(--surf);border-radius:var(--r);':''}"><div class="ae-name">${a.name}</div><div class="ae-right"><span class="ae-hint">1–9</span><input class="ae-val-input" type="number" min="1" max="9" inputmode="numeric" value="${vStr}" placeholder="–" data-i="${i}"></div></div>`;
+}
+
+function sortBarHTML(){
+  const opts=[['newest','Newest first'],['oldest','Oldest first'],['name','Name A–Z']];
+  return '<div class="sort-bar">'+opts.map(([val,lbl])=>`<button class="sort-pill${sortOrder===val?' on':''}" onclick="setSortOrder('${val}')">${lbl}</button>`).join('')+'</div>';
+}
+
+function setSortOrder(o){
+  sortOrder=o;
+  renderG(); renderT();
+}
+
+function saveV(){
+  const nm=(document.getElementById('vn').value||'').trim();
+  const pp=document.getElementById('pp'); const ph=pp?pp.src:'';
+  const srcAttrs = FORM_ORDER.map(def=>{ const src = editId ? VV.find(x=>x.id===editId)?.attrs.find(a=>a.name===def.name) : null; return src || ADEFS.find(a=>a.name===def.name) || def; });
+  const rows=document.querySelectorAll('.aerow');
+  const attrsForm=Array.from(rows).map((row,i)=>{
+    const def=srcAttrs[i]||FORM_ORDER[i];
+    const sel=row.querySelector('select');
+    if(sel) return {name:def.name,type:'dropdown',val:sel.value,opts:ADEFS.find(a=>a.name===def.name)?.opts||def.opts||[]};
+    const inp=row.querySelector('input[type=number]');
+    const raw = inp ? inp.value.trim() : '';
+    let v = raw==='' ? null : Math.max(1,Math.min(9,Math.round(parseFloat(raw))));
+    return {name:def.name,type:'slider',val:v};
+  });
+  // Store in ADEFS display order
+  const attrs = ADEFS.map(def=>attrsForm.find(a=>a.name===def.name)||{...def,val:null});
+  const d=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  if(editId){
+    const v=VV.find(x=>x.id===editId);
+    if(v){ v.name=nm; v.attrs=attrs; if(ph&&(ph.startsWith('data:')||ph.startsWith('blob:'))) v.photo=ph; }
+    ulocked[editId]=false;
+  } else {
+    VV.push({id:uid(),name:nm,photo:ph.startsWith('data:')?ph:'',attrs,added:d,notes:[]});
+    cidx=VV.length-1;
+  }
+  save(); closeM(); ra();
+}
+
+/* ── POKER TABLE ── */
+const ptStored = localStorage.getItem('vc_seats');
+let ptSeats = ptStored ? JSON.parse(ptStored) : Array(9).fill(null);
+ptSeats[0] = 'hero';
+let ptPending = null, ptActiveSeat = null, ptPendingSeat = null;
+
+function savePT(){ localStorage.setItem('vc_seats', JSON.stringify(ptSeats)); }
+
+function ptIni(v){
+  if(!v) return '?';
+  const parts = v.name.trim().split(' ');
+  return parts.length>1 ? (parts[0][0]+parts[1][0]).toUpperCase() : v.name.slice(0,2).toUpperCase();
+}
+
+function renderPoker(){
+  const el = document.getElementById('vp');
+  if(!el) return;
+  if(!document.getElementById('pt-outer')){
+    el.innerHTML = `
+      <div style="font-size:12px;color:var(--t3);text-align:center;padding:4px 0 0;width:100%;">Double-tap empty seat to add · Tap occupied seat for options</div>
+      <div id="pt-outer" style="width:100%;max-width:300px;position:relative;">
+        <svg id="ptsvg" width="100%" viewBox="0 0 260 370" xmlns="http://www.w3.org/2000/svg" style="display:block;"></svg>
+        <div id="pt-btns" style="position:absolute;inset:0;pointer-events:none;"></div>
+        <div class="pt-popup" id="ptpop">
+          <button class="pt-pop-x" onclick="ptClosePopup()">&#10005;</button>
+          <div class="pt-pop-name" id="ptpop-name">—</div>
+          <button class="pt-pop-btn del" onclick="ptRemove()">Remove from table</button>
+        </div>
+      </div>
+    `;
+  }
+  ptDraw();
+}
+
+function ptSeatPos(i){
+  const cx=130,cy=185,rx=82,ry=140;
+  const angle = -Math.PI/2 + i*(2*Math.PI/9);
+  return { x: cx + rx*Math.cos(angle), y: cy + ry*Math.sin(angle) };
+}
+
+function ptDraw(){
+  const svgEl = document.getElementById('ptsvg');
+  if(!svgEl) return;
+  const cx=130,cy=185,rx=82,ry=140;
+  let html = `
+    <ellipse cx="${cx}" cy="${cy}" rx="${rx+12}" ry="${ry+12}" fill="#5c3a1e"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${rx+5}" ry="${ry+5}" fill="#1a4d2e" stroke="#0f3320" stroke-width="2"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${rx-4}" ry="${ry-4}" fill="none" stroke="#1e5c34" stroke-width="1" stroke-dasharray="5 4"/>
+  `;
+  for(let i=0;i<9;i++) html += ptDrawSeat(i);
+  svgEl.innerHTML = html;
+
+  // Overlay transparent HTML buttons on each seat — reliable touch on iPhone
+  const outer = document.getElementById('pt-outer');
+  const btns  = document.getElementById('pt-btns');
+  if(!outer||!btns) return;
+  btns.innerHTML = '';
+  btns.style.pointerEvents = 'auto';
+  // Use setTimeout to ensure SVG is visible and has dimensions
+  setTimeout(()=>{
+    const svgRect = svgEl.getBoundingClientRect();
+    const svgW = svgRect.width || outer.getBoundingClientRect().width;
+    const svgH = svgRect.height || (svgW * 370/260);
+    const scaleX = svgW / 260;
+    const scaleY = svgH / 370;
+    const r = 22;
+    const isTouchDevice = ('ontouchstart' in window);
+    for(let i=0;i<9;i++){
+      const {x,y} = ptSeatPos(i);
+      const px = x * scaleX;
+      const py = y * scaleY;
+      const pr = r * scaleX;
+      const btn = document.createElement('button');
+      btn.style.cssText = `position:absolute;left:${px-pr}px;top:${py-pr}px;width:${pr*2}px;height:${pr*2}px;border-radius:50%;background:transparent;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;`;
+      btn.setAttribute('aria-label', `Seat ${i+1}`);
+      if(isTouchDevice){
+        let tapTimer = null;
+        let tapCount = 0;
+        btn.addEventListener('touchend', (e)=>{
+          e.preventDefault();
+          tapCount++;
+          if(tapCount===1){
+            tapTimer = setTimeout(()=>{ tapCount=0; ptSingleTap(i); }, 320);
+          } else if(tapCount>=2){
+            clearTimeout(tapTimer); tapCount=0; ptDoubleTap(i);
+          }
+        }, {passive:false});
+      } else {
+        // Desktop: click for single, dblclick for double
+        btn.addEventListener('click', ()=>{ ptSingleTap(i); });
+        btn.addEventListener('dblclick', ()=>{ ptDoubleTap(i); });
+      }
+      btns.appendChild(btn);
+    }
+  }, 80);
+}
+
+function ptSingleTap(i){
+  const vid=ptSeats[i];
+  if(vid==='hero') return;
+  if(ptPending==='__selecting__') return;
+  if(vid){
+    const idx=VV.findIndex(x=>x.id===vid);
+    if(idx>=0){ cidx=idx; sw('s', document.querySelector('.tab')); }
+  }
+}
+
+function ptDoubleTap(i){
+  const vid=ptSeats[i];
+  if(vid==='hero') return;
+  ptClosePopup();
+  if(vid){
+    const v=VV.find(x=>x.id===vid);
+    const pop=document.getElementById('ptpop');
+    const outer=document.getElementById('pt-outer');
+    const svgEl=document.getElementById('ptsvg');
+    const {x,y}=ptSeatPos(i);
+    const scaleX=svgEl.getBoundingClientRect().width/260;
+    const scaleY=svgEl.getBoundingClientRect().height/370;
+    const px=x*scaleX, py=y*scaleY;
+    const outerW=outer.getBoundingClientRect().width;
+    document.getElementById('ptpop-name').textContent=v?.name||'Unknown';
+    pop.style.left=Math.min(Math.max(px-75,4),outerW-168)+'px';
+    pop.style.top=Math.min(py+26, svgEl.getBoundingClientRect().height-100)+'px';
+    ptActiveSeat=i;
+    pop.classList.add('on');
+  } else {
+    ptPendingSeat=i;
+    ptPending='__selecting__';
+    sw('g', document.querySelectorAll('.tab')[1]);
+    const banner=document.createElement('div');
+    banner.id='pt-grid-banner';
+    banner.style.cssText='position:fixed;top:0;left:0;right:0;background:var(--t1);color:var(--card);text-align:center;padding:10px 14px;font-size:14px;font-weight:500;z-index:100;display:flex;align-items:center;justify-content:space-between;';
+    banner.innerHTML=`<span>Tap a villain for seat ${i+1}</span><button onclick="ptCancelGridAssign()" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;padding:0 4px;">&#10005;</button>`;
+    document.body.appendChild(banner);
+  }
+}
+
+function ptCancelGridAssign(){
+  ptPending=null; ptPendingSeat=null;
+  const b=document.getElementById('pt-grid-banner'); if(b) b.remove();
+}
+
+function ptDrawSeat(i){
+  const {x,y}=ptSeatPos(i);
+  const r=22;
+  const vid=ptSeats[i];
+  const isHero=vid==='hero';
+  const v=vid&&!isHero?VV.find(x=>x.id===vid):null;
+  const seatNum=i===0?'':String(i+1);
+  let fill=isHero?'#eaf5ef':v?'#ffffff':'#f0eeeb';
+  let stroke=isHero?'#1d7a45':v?'#333':'#999';
+  let strokeW=isHero||v?2:1.5;
+  let dash=v||isHero?'':'4 3';
+  let inner='';
+  if(isHero){
+    inner=`<text x="${x}" y="${y+1}" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#1d7a45" font-family="sans-serif">H</text>
+           <text x="${x}" y="${y+r+9}" text-anchor="middle" font-size="8" fill="#1d7a45" font-weight="600" font-family="sans-serif">Hero</text>`;
+  } else if(v){
+    if(v.photo){
+      inner=`<defs><clipPath id="ptclip${i}"><circle cx="${x}" cy="${y}" r="${r-1}"/></clipPath></defs>
+             <image href="${v.photo}" x="${x-r+1}" y="${y-r+1}" width="${(r-1)*2}" height="${(r-1)*2}" clip-path="url(#ptclip${i})" preserveAspectRatio="xMidYMin slice"/>
+             <text x="${x}" y="${y+r+9}" text-anchor="middle" font-size="8" fill="#333" font-family="sans-serif">${v.name.split(' ')[0].slice(0,10)}</text>`;
+    } else {
+      inner=`<text x="${x}" y="${y+1}" text-anchor="middle" dominant-baseline="middle" font-size="11" font-weight="600" fill="#181714" font-family="sans-serif">${ptIni(v)}</text>
+             <text x="${x}" y="${y+r+9}" text-anchor="middle" font-size="8" fill="#333" font-family="sans-serif">${v.name.split(' ')[0].slice(0,10)}</text>`;
+    }
+  } else {
+    inner=`<text x="${x}" y="${y+1}" text-anchor="middle" dominant-baseline="middle" font-size="18" fill="#bbb" font-family="sans-serif">+</text>
+           <text x="${x}" y="${y+r+9}" text-anchor="middle" font-size="8" fill="#bbb" font-family="sans-serif">${seatNum}</text>`;
+  }
+  return `<g id="pts${i}" style="cursor:pointer;">
+    <circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}" ${dash?`stroke-dasharray="${dash}"`:''} />
+    ${inner}
+  </g>`;
+}
+
+function ptRemove(){
+  if(ptActiveSeat!==null){ ptSeats[ptActiveSeat]=null; savePT(); ptDraw(); }
+  ptClosePopup();
+}
+
+function ptClosePopup(){
+  const pop=document.getElementById('ptpop'); if(pop) pop.classList.remove('on');
+  ptActiveSeat=null;
+}
+
+ra();
+</script>
+</body>
+</html>
