@@ -141,7 +141,7 @@ body{font-family:var(--font);color:var(--t1);display:flex;flex-direction:column;
 .sort-pill.on{background:var(--t1);color:var(--card);border-color:var(--t1);}
 .sort-pill:active{opacity:.8;}
 table.dt{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto;}
-table.dt th{background:var(--surf);color:var(--t3);padding:7px 6px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--brd);white-space:nowrap;position:sticky;top:0;}
+table.dt th{background:var(--surf);color:var(--t3);padding:7px 6px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--brd);white-space:nowrap;position:sticky;top:0;z-index:2;}
 table.dt td{padding:8px 6px;border-bottom:1px solid var(--brd);color:var(--t1);vertical-align:middle;}
 table.dt tr:active td{background:var(--surf);}
 .tth{width:32px;height:32px;border-radius:6px;object-fit:cover;object-position:top;display:block;}
@@ -633,9 +633,9 @@ function renderT(){
   const rows=sv.map(v=>{
     const ph=v.photo?`<img class="tth" src="${v.photo}" alt="">`:`<div class="tphe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>`;
     const cells=ADEFS.map(def=>{ const a=v.attrs.find(x=>x.name===def.name)||def; return a.type==='dropdown'?`<td style="color:var(--t2)">${a.val}</td>`:`<td class="${vc(a.val)}" style="font-family:var(--mono);font-weight:600;">${fv(a.val)}</td>`; }).join('');
-    return `<tr ontouchend="event.preventDefault();tableTap('${v.id}')" onclick="tableTap('${v.id}')" style="cursor:pointer;"><td>${ph}</td><td style="font-weight:500;">${v.name||'—'}</td><td style="color:var(--t3);font-size:12px;">${v.added}</td>${cells}<td style="color:var(--t3);">${(v.notes||[]).length}</td></tr>`;
+    return `<tr ontouchstart="this._tsy=event.touches[0].clientY" ontouchend="if(Math.abs(event.changedTouches[0].clientY-this._tsy)<8){event.preventDefault();tableTap('${v.id}')}" onclick="tableTap('${v.id}')" style="cursor:pointer;"><td>${ph}</td><td style="font-weight:500;">${v.name||'—'}</td><td style="color:var(--t3);font-size:12px;">${v.added}</td>${cells}<td style="color:var(--t3);">${(v.notes||[]).length}</td></tr>`;
   }).join('');
-  t.innerHTML=sortBarHTML()+`<div style="overflow-x:auto;"><table class="dt">${thead}<tbody>${rows}</tbody></table></div>`;
+  t.innerHTML=sortBarHTML()+`<table class="dt">${thead}<tbody>${rows}</tbody></table>`;
 }
 
 function xCSV(){
