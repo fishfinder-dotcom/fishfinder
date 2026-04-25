@@ -1295,12 +1295,19 @@ function ptDraw(){
   btns.style.pointerEvents = 'auto';
   // Use setTimeout to ensure SVG is visible and has dimensions
   setTimeout(()=>{
-    const svgW = outer.getBoundingClientRect().width || 300;
-    const svgH = svgW * (370/260); // always derive height from known aspect ratio
+    // Use most reliable width source available — svgEl.clientWidth is most accurate on iPhone
+    const svgEl2 = document.getElementById('ptsvg');
+    const rawW = (svgEl2 && svgEl2.clientWidth > 0)
+      ? svgEl2.clientWidth
+      : (outer.clientWidth > 0
+          ? Math.min(outer.clientWidth, 300)
+          : Math.min(window.innerWidth - 20, 300));
+    const svgW = rawW;
+    const svgH = svgW * (370/260);
     const scaleX = svgW / 260;
     const scaleY = svgH / 370;
-    // Set btns div to exact calculated height so buttons don't overflow
     btns.style.height = svgH + 'px';
+    btns.style.width = svgW + 'px';
     const r = 22;
     const isTouchDevice = ('ontouchstart' in window);
     for(let i=0;i<9;i++){
@@ -1330,7 +1337,12 @@ function ptDraw(){
       }
       btns.appendChild(btn);
     }
-  }, 150);
+  }, 200);
+  // Safety net — rebuild buttons after full paint on slow devices
+  setTimeout(()=>{
+    const b = document.getElementById('pt-btns');
+    if(b && b.children.length === 0) ptDraw();
+  }, 600);
 }
 
 function ptSingleTap(i){
