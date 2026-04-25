@@ -579,6 +579,35 @@ function jumpToCard(id){
   if(i>=0){ cidx=i; sw('s', document.querySelector('.tab')); }
 }
 
+// Table row double-tap — assign villain to pending seat or go to card
+let tblTapTimer={}, tblTapCount={};
+function tableTap(id){
+  if(!tblTapCount[id]) tblTapCount[id]=0;
+  tblTapCount[id]++;
+  clearTimeout(tblTapTimer[id]);
+  if(tblTapCount[id]===1){
+    tblTapTimer[id]=setTimeout(()=>{
+      tblTapCount[id]=0;
+      jumpToCard(id);
+    },320);
+  } else {
+    tblTapCount[id]=0;
+    // Double tap — assign to seat if in assign mode
+    if(ptPending==='__selecting__' && ptPendingSeat!==null){
+      if(!ptSeats.includes(id)){
+        ptSeats[ptPendingSeat]=id;
+        savePT();
+      }
+      ptPending=null; ptPendingSeat=null;
+      const b=document.getElementById('pt-grid-banner'); if(b) b.remove();
+      sw('p', document.querySelectorAll('.tab')[3]);
+    } else {
+      // No assign mode — just go to card
+      jumpToCard(id);
+    }
+  }
+}
+
 function jmp(i){
   if(ptPending==='__selecting__' && ptPendingSeat!==null){
     const vid=VV[i]?.id;
@@ -604,7 +633,7 @@ function renderT(){
   const rows=sv.map(v=>{
     const ph=v.photo?`<img class="tth" src="${v.photo}" alt="">`:`<div class="tphe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>`;
     const cells=ADEFS.map(def=>{ const a=v.attrs.find(x=>x.name===def.name)||def; return a.type==='dropdown'?`<td style="color:var(--t2)">${a.val}</td>`:`<td class="${vc(a.val)}" style="font-family:var(--mono);font-weight:600;">${fv(a.val)}</td>`; }).join('');
-    return `<tr onclick="jumpToCard('${v.id}')" style="cursor:pointer;"><td>${ph}</td><td style="font-weight:500;">${v.name||'—'}</td><td style="color:var(--t3);font-size:12px;">${v.added}</td>${cells}<td style="color:var(--t3);">${(v.notes||[]).length}</td></tr>`;
+    return `<tr ontouchend="event.preventDefault();tableTap('${v.id}')" onclick="tableTap('${v.id}')" style="cursor:pointer;"><td>${ph}</td><td style="font-weight:500;">${v.name||'—'}</td><td style="color:var(--t3);font-size:12px;">${v.added}</td>${cells}<td style="color:var(--t3);">${(v.notes||[]).length}</td></tr>`;
   }).join('');
   t.innerHTML=sortBarHTML()+`<div style="overflow-x:auto;"><table class="dt">${thead}<tbody>${rows}</tbody></table></div>`;
 }
@@ -978,8 +1007,13 @@ function buildReadScript(v){
     else dedupedParts.push('No attributes recorded yet.');
   }
 
-  // ── LATEST TIMESTAMPED NOTE ──
-  if(v.notes&&v.notes.length) dedupedParts.push('Latest note. ' + v.notes[0].text);
+  // ── ALL TIMESTAMPED NOTES ──
+  if(v.notes&&v.notes.length){
+    dedupedParts.push('Latest note. ' + v.notes[0].text);
+    for(let ni=1; ni<v.notes.length; ni++){
+      dedupedParts.push('… You also wrote … ' + v.notes[ni].text);
+    }
+  }
 
   return dedupedParts.join(' ');
 }
@@ -1261,11 +1295,12 @@ function ptDraw(){
   btns.style.pointerEvents = 'auto';
   // Use setTimeout to ensure SVG is visible and has dimensions
   setTimeout(()=>{
-    const svgRect = svgEl.getBoundingClientRect();
-    const svgW = svgRect.width || outer.getBoundingClientRect().width;
-    const svgH = svgRect.height || (svgW * 370/260);
+    const svgW = outer.getBoundingClientRect().width || 300;
+    const svgH = svgW * (370/260); // always derive height from known aspect ratio
     const scaleX = svgW / 260;
     const scaleY = svgH / 370;
+    // Set btns div to exact calculated height so buttons don't overflow
+    btns.style.height = svgH + 'px';
     const r = 22;
     const isTouchDevice = ('ontouchstart' in window);
     for(let i=0;i<9;i++){
@@ -1295,7 +1330,7 @@ function ptDraw(){
       }
       btns.appendChild(btn);
     }
-  }, 80);
+  }, 150);
 }
 
 function ptSingleTap(i){
